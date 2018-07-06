@@ -2,14 +2,15 @@ library(shiny)
 library(shinydashboard)
 library(ggplot2)
 library(DT)
+library(png)
 
 
 
 ui <- dashboardPage(
   dashboardHeader(title = "FiFA World Ranking System"),
   dashboardSidebar(
-   #imageOutput(src("img/Logo.png"),width = 50),
-    tags$img(src='/www/Logo.png'),
+    #the logo for the site
+    imageOutput("image1",height = 30),
     
     tags$hr(),
     sidebarMenu(
@@ -82,7 +83,7 @@ ui <- dashboardPage(
            DT::dataTableOutput("csvdata")
       ),
       tabItem(tabName = "Year",
-              h1("hitler we love you So!!")
+              h1("hitler my uncle")
       )
       )
     )
@@ -93,9 +94,23 @@ ui <- dashboardPage(
 )
 
 server <- function(input,output){
+  
+  #render the table of fifa ranking
   output$csvdata <- DT::renderDataTable({
     csvdata
   })
-  output$img <-renderImage({ tags$img(src="/img/Logo.png",width = 50)})
+  
+  #render image
+  output$image1 <- renderImage({
+    if ("True") {
+      return(list(
+        src = "www/ball1.png",
+        contentType = "image/png",
+        alt = "foot"
+      ))
+    } 
+      
+  }, deleteFile = FALSE)
+  
 }
 shinyApp(ui=ui,server=server)
