@@ -79,7 +79,7 @@ ui <- dashboardPage(
          box(title = tags$b("Tables for Conferderation"),width = 100,background = "blue",
                 tabItems(
       tabItem(tabName = "CAF",
-      csvdata <-read.csv("/home/joshard/mode/fifa_ranking.csv",header = TRUE),
+      csvdata <-read.csv(file.choose(),header = TRUE),
            DT::dataTableOutput("csvdata")
       ),
       tabItem(tabName = "Year",
