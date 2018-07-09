@@ -3,16 +3,25 @@ library(shinydashboard)
 library(ggplot2)
 library(DT)
 library(png)
+library(dplyr)
 
 
 
 ui <- dashboardPage(
   dashboardHeader(title = "FiFA World Ranking System"),
   dashboardSidebar(
+    
     #the logo for the site
     imageOutput("image1",height = 30),
     
+    #get file
+    #data<-read.csv(file.choose(),header = TRUE),
+    #fifa<-as.data.frame(data),
+    
+    
     tags$hr(),
+    
+    #the sidebar menu
     sidebarMenu(
     menuItem( tags$h4("Conferderation"),
     
@@ -39,51 +48,67 @@ ui <- dashboardPage(
     )
   )
   ),
+  #the skin color of the dashboard
   skin = "green",
   dashboardBody(
-    navbarPage("Applications",
-               tabPanel("charts"),
-               tabPanel("histogram",tableOutput("mtcars")),
-               tabPanel("tables")
-               ),
+            #Select input value country, conferderation, year
+    selectInput("conferderation","choose conferderation:",
+                list('conferderation'=c("CAF","COMMEBOL","UEFA","OFC","CONCACAF","AFC"))
+                ),
+    #divide the dashboard body into rows
+    #first row of the dashboard body
+    
     fluidRow(
+      #first column of the row 
       column(6,
       box(
-        title = tags$b("controls"),width = 50, background = "blue",solidHeader = TRUE,
+        title = tags$b("controls"),width = 50, background = "blue",solidHeader = TRUE,collapsible = TRUE,status = 
+          "primary",
         tabItems(
           tabItem(tabName = "Slider",
         sliderInput("slider","Observations:",
                     min = 1,max=100, value = 50)
         ),
         tabItem(tabName = "off",
-                h2("off control h2 font")
+                box("plot1", h2("off control h2 font"))
                 )
       )
       )
     ),
+    #second column of the row 
     column(6,
-         box(title = tags$b("Histogram buddie"),width = 50,background = "blue",
-             tabItems(
+         box(title = tags$b("World Best"),width = 50,background = "blue",solidHeader = TRUE,collapsible = TRUE,status = "primary",
+         tabItems(
             tabItem(tabName = "UEFA",
                     h1("football live")
                     ),
             tabItem(tabName = "OFC",
-                    h1("The OFC cup")
+                    world_best<-fifa%>%filter(rank<=10,rank_date=="6/7/2018")%>% select(rank,country_full,total_points),
+                    plotOutput("worldbest",click = "plot Me")
             )
           )
     )  
     )
     ),
+    #second row of the dashboard body
     fluidRow(
   column(12,
-         box(title = tags$b("Tables for Conferderation"),width = 100,background = "blue",
+         box(title =textOutput("result"),width = 100,collapsible = TRUE,status = "primary",solidHeader = TRUE,
                 tabItems(
       tabItem(tabName = "CAF",
+
+              africa_best<-fifa%>%filter(confederation==textOutput("result"),rank_date=="6/7/2018")%>% select(rank,country_full,total_points)%>%slice(1:10),
+              plotOutput("africaBest", click = "plot ME"),
+
       csvdata <-read.csv(file.choose(),header = TRUE),
            DT::dataTableOutput("csvdata")
+
       ),
       tabItem(tabName = "Year",
-              h1("hitler my uncle")
+              country_data<-fifa%>%filter(country_abrv=="GER")%>%select(rank,previous_points,rank_date),
+             plotOutput("countrydata", click = "click Me")
+                  
+                  )
       )
       )
     )
@@ -91,14 +116,20 @@ ui <- dashboardPage(
     )
    
   )
-)
+
 
 server <- function(input,output){
   
-  #render the table of fifa ranking
-  output$csvdata <- DT::renderDataTable({
-    csvdata
-  })
+ 
+  #plot_bar country data
+  output$worldbest <- renderPlot(ggplot(world_best,aes(x=country_full,y=total_points))+geom_col()+coord_flip())
+ # output the country data
+  output$countrydata <- renderPlot(ggplot(country_data,aes(x=rank_date,y=previous_points))+geom_col()+coord_flip())
+  #output africa best
+  output$africaBest <- renderPlot(ggplot(africa_best,aes(x=country_full,y=total_points))+geom_col()+coord_flip())
+  
+  #choice made of the select option
+  output$result <- renderText(paste(input$conferderation))
   
   #render image
   output$image1 <- renderImage({
@@ -107,6 +138,7 @@ server <- function(input,output){
         src = "www/ball1.png",
         contentType = "image/png",
         alt = "foot"
+        
       ))
     } 
       
