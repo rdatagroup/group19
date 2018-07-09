@@ -6,3 +6,4 @@ fifa<-as.data.frame(data)
 country_data<-fifa%>%filter(country_abrv=="GER")%>%select(rank,previous_points,rank_date)
 #graph for Germany team
 plot_bar<-ggplot(country_data,aes(x=rank_date,y=previous_points))+geom_col()+coord_flip()
+plot_bar

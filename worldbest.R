@@ -6,3 +6,4 @@ fifa<-as.data.frame(data)
 world_best<-fifa%>%filter(rank<=10,rank_date=="6/7/2018")%>% select(rank,country_full,total_points)
 #draw a bar graph for the world best
 plot_bar<-ggplot(world_best,aes(x=country_full,y=total_points))+geom_col()+coord_flip()
+plot_bar
