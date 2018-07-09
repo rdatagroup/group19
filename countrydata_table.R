@@ -8,4 +8,5 @@ counrty_select<-fifa%>%filter(country_abrv=="BRA")%>%select(rank_date,rank,total
 slect_reduce<-counrty_select[,c(1,2,3,4)]
 #change column names 
 colnames(slect_reduce)<-c("DATE","RANK","POINTS","CHANGE")
+#draw table
 widget_formattable<-formattable(slect_reduce)
