@@ -30,7 +30,7 @@ ui <- dashboardPage(
       menuSubItem("CONMEBOL",tabName = "CONMEBOL"),
       menuSubItem("AFC", tabName = "AFC"),
       menuSubItem("OFC", tabName = "OFC"),
-      menuSubItem("CONCACAF",tabName = "CONCACAF")
+      menuSubItem("CONCACsAF",tabName = "CONCACAF")
     ),
     menuItem( tags$h4("Bet Team"),
               
@@ -53,7 +53,7 @@ ui <- dashboardPage(
   dashboardBody(
             #Select input value country, conferderation, year
     selectInput("conferderation","choose conferderation:",
-                list('conferderation'=c("CAF","COMMEBOL","UEFA","OFC","CONCACAF","AFC"))
+                choices=c("CAF","COMMEBOL","UEFA","OFC","CONCACAF","AFC")
                 ),
     
     fluidRow(
@@ -91,13 +91,13 @@ ui <- dashboardPage(
          box(title =textOutput("result"),width = 100,collapsible = TRUE,status = "primary",solidHeader = TRUE,
                 tabItems(
       tabItem(tabName = "CAF",
-<<<<<<< HEAD
-              africa_best<-fifa%>%filter(confederation==textOutput("result"),rank_date=="6/7/2018")%>% select(rank,country_full,total_points)%>%slice(1:10),
-              plotOutput("africaBest", click = "plot ME")
-=======
+
+             # africa_best<-fifa%>%filter(confederation==textOutput("result"),rank_date=="6/7/2018")%>% select(rank,country_full,total_points)%>%slice(1:10),
+              plotOutput("africaBest", click = "plot ME"),
+
       csvdata <-read.csv(file.choose(),header = TRUE),
            DT::dataTableOutput("csvdata")
->>>>>>> 4c36b3668a4cc1c6425349ffd14028b4c82f2799
+
       ),
       tabItem(tabName = "Year",
               country_data<-fifa%>%filter(country_abrv=="GER")%>%select(rank,previous_points,rank_date),
@@ -121,7 +121,11 @@ server <- function(input,output){
  # output the country data
   output$countrydata <- renderPlot(ggplot(country_data,aes(x=rank_date,y=previous_points))+geom_col()+coord_flip())
   #output africa best
-  output$africaBest <- renderPlot(ggplot(africa_best,aes(x=country_full,y=total_points))+geom_col()+coord_flip())
+  output$africaBest <- renderPlot({
+    africa_best<-fifa%>%filter(confederation==input$conferderation,rank_date=="6/7/2018")%>% select(rank,country_full,total_points)%>%slice(1:10)
+    ggplot(world_best,aes(x=country_full,y=total_points))+geom_col()+coord_flip()
+  }
+    )
   
   #choice made of the select option
   output$result <- renderText(paste(input$conferderation))
