@@ -15,8 +15,8 @@ ui <- dashboardPage(
     imageOutput("image1",height = 30),
     
     #get file
-    #data<-read.csv(file.choose(),header = TRUE),
-    #fifa<-as.data.frame(data),
+    data<-read.csv(file.choose(),header = TRUE),
+    fifa<-as.data.frame(data),
     
     
     tags$hr(),
@@ -30,7 +30,7 @@ ui <- dashboardPage(
       menuSubItem("CONMEBOL",tabName = "CONMEBOL"),
       menuSubItem("AFC", tabName = "AFC"),
       menuSubItem("OFC", tabName = "OFC"),
-      menuSubItem("CONCACsAF",tabName = "CONCACAF")
+      menuSubItem("CONCACAF",tabName = "CONCACAF")
     ),
     menuItem( tags$h4("Bet Team"),
               
@@ -51,10 +51,6 @@ ui <- dashboardPage(
   #the skin color of the dashboard
   skin = "green",
   dashboardBody(
-            #Select input value country, conferderation, year
-    selectInput("conferderation","choose conferderation:",
-                choices=c("CAF","COMMEBOL","UEFA","OFC","CONCACAF","AFC")
-                ),
     
     fluidRow(
       column(6,
@@ -73,37 +69,33 @@ ui <- dashboardPage(
       )
     ),
     column(6,
-         box(title = tags$b("World Best"),width = 50,background = "blue",solidHeader = TRUE,collapsible = TRUE,status = "primary",
-         tabItems(
-            tabItem(tabName = "UEFA",
-                    h1("football live")
-                    ),
-            tabItem(tabName = "OFC",
-                    world_best<-fifa%>%filter(rank<=10,rank_date=="6/7/2018")%>% select(rank,country_full,total_points),
-                    plotOutput("worldbest",click = "plot Me")
-            )
-          )
-    )  
+         box(title = tags$b("YEAR"),width = 50,background = "blue",solidHeader = TRUE,collapsible = TRUE,status = "primary")  
     )
     ),
     fluidRow(
   column(12,
-         box(title =textOutput("result"),width = 100,collapsible = TRUE,status = "primary",solidHeader = TRUE,
+         box(title =tags$b("CHART"),width = 100,collapsible = TRUE,status = "primary",solidHeader = TRUE,
                 tabItems(
       tabItem(tabName = "CAF",
-
-             # africa_best<-fifa%>%filter(confederation==textOutput("result"),rank_date=="6/7/2018")%>% select(rank,country_full,total_points)%>%slice(1:10),
-              plotOutput("africaBest", click = "plot ME"),
-
-      csvdata <-read.csv(file.choose(),header = TRUE),
-           DT::dataTableOutput("csvdata")
-
+              plotOutput("africaBest", click = "plot ME")
       ),
+      tabItem(tabName = "UEFA",
+              plotOutput("europebest")),
+      tabItem(tabName = "CONMEBOL",
+              plotOutput("conmebolbest")),
+      tabItem(tabName = "AFC",
+              plotOutput("afcbest")),
+      tabItem(tabName = "OFC",
+              plotOutput("ofcbest")),
+      tabItem(tabName = "CONCACAF",
+              plotOutput("concacafbest")),
+      
       tabItem(tabName = "Year",
-              country_data<-fifa%>%filter(country_abrv=="GER")%>%select(rank,previous_points,rank_date),
-             plotOutput("countrydata", click = "click Me")
-                  
-                  )
+              #country_data<-fifa%>%filter(country_abrv=="GER")%>%select(rank,previous_points,rank_date),
+             plotOutput("countrydata", click = "click Me") ),
+      tabItem(tabName = "Top10",
+              #country_data<-fifa%>%filter(country_abrv=="GER")%>%select(rank,previous_points,rank_date),
+              plotOutput("worldbest", click = "click Me") )
       )
       )
     )
@@ -117,16 +109,45 @@ server <- function(input,output){
   
  
   #plot_bar country data
-  output$worldbest <- renderPlot(ggplot(world_best,aes(x=country_full,y=total_points))+geom_col()+coord_flip())
+ # output$worldbest <- renderPlot(ggplot(world_best,aes(x=country_full,y=total_points))+geom_col()+coord_flip())
  # output the country data
   output$countrydata <- renderPlot(ggplot(country_data,aes(x=rank_date,y=previous_points))+geom_col()+coord_flip())
   #output africa best
   output$africaBest <- renderPlot({
-    africa_best<-fifa%>%filter(confederation==input$conferderation,rank_date=="6/7/2018")%>% select(rank,country_full,total_points)%>%slice(1:10)
-    ggplot(world_best,aes(x=country_full,y=total_points))+geom_col()+coord_flip()
-  }
-    )
+    africa_best<-fifa%>%filter(confederation=="CAF",rank_date=="6/7/2018")%>%select(rank,country_full,total_points)%>%slice(1:10)
+    ggplot(africa_best,aes(x=country_full,y=total_points))+geom_col()+coord_flip()
+  })
+  #output europe's best
+  output$europebest <- renderPlot({
+    europe_best<-fifa%>%filter(confederation=="UEFA",rank_date=="6/7/2018")%>%select(rank,country_full,total_points)%>%slice(1:10)
+    ggplot(europe_best,aes(x=country_full,y=total_points))+geom_col()+coord_flip()
+  })
+  #output asia's best
+  output$afcbest <- renderPlot({
+    asian_best<-fifa%>%filter(confederation=="AFC",rank_date=="6/7/2018")%>%select(rank,country_full,total_points)%>%slice(1:10)
+    ggplot(asian_best,aes(x=country_full,y=total_points))+geom_col()+coord_flip()
+  })
+  #output oceanian best
+  output$ofcbest <- renderPlot({
+    oceanian_best<-fifa%>%filter(confederation=="OFC",rank_date=="6/7/2018")%>%select(rank,country_full,total_points)%>%slice(1:10)
+    ggplot(oceanian_best,aes(x=country_full,y=total_points))+geom_col()+coord_flip()
+  })
+  #output southamerica's best
+  output$conmebolbest <- renderPlot({
+    southamerica_best<-fifa%>%filter(confederation=="CONMEBOL",rank_date=="6/7/2018")%>%select(rank,country_full,total_points)%>%slice(1:10)
+    ggplot(southamerica_best,aes(x=country_full,y=total_points))+geom_col()+coord_flip()
+  })
+  #output for concaf
+  output$concacafbest <- renderPlot({
+    Northamerica_best<-fifa%>%filter(confederation=="CONCACAF",rank_date=="6/7/2018")%>%select(rank,country_full,total_points)%>%slice(1:10)
+    ggplot( Northamerica_best,aes(x=country_full,y=total_points))+geom_col()+coord_flip()
+  })
+  #output worldbest
   
+  output$worldbest <- renderPlot({
+    world_best_data<-fifa%>%filter(rank<=10,rank_date=="6/7/2018")%>%select(rank,country_full,total_points)
+    ggplot( world_best_data,aes(x=country_full,y=total_points))+geom_col()+coord_flip()
+  })
   #choice made of the select option
   output$result <- renderText(paste(input$conferderation))
   
