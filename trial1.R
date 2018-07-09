@@ -29,7 +29,35 @@ data_sorted <-ddply(UEFA,.(country_full),
 
 newdata <- data_sorted[order(-data_sorted$sum), ]
 newdata
-# plotting the data 
-barplot(as.matrix(newdata), beside=T , legend.text=T, 
-        col=c("red" , "green", 
-             "blue"), ylim=newdata$sum, ylab="height")
+
+#filtering for AFC confederation 
+AFC <- subset(data2,confederation == "AFC")
+AFC
+
+data_sorted <-ddply(AFC,.(country_full),
+                    summarize,sum=sum(previous_points))
+
+newdata1 <- data_sorted[order(-data_sorted$sum), ]
+newdata1
+#filtering for OFC confederation 
+OFC <- subset(data2,confederation == "OFC")
+OFC
+
+data_sorted <-ddply(OFC,.(country_full),
+                    summarize,sum=sum(previous_points))
+
+newdata2 <- data_sorted[order(-data_sorted$sum), ]
+newdata2
+
+#filtering for CAF confederation 
+CAF <- subset(data2,confederation == "CAF")
+CAF
+
+data_sorted <-ddply(CAF,.(country_full),
+                    summarize,sum=sum(previous_points))
+
+newdata3 <- data_sorted[order(-data_sorted$sum), ]
+newdata3
+
+
+
