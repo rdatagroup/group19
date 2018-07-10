@@ -4,6 +4,7 @@ library(ggplot2)
 library(DT)
 library(png)
 library(dplyr)
+library(formattable)
 
 
 
@@ -99,11 +100,59 @@ ui <- dashboardPage(
       )
       )
     )
-  )
+  ),
+  #Row with column 12 siZe
+  fluidRow(
+    column(12,
+           box(title =tags$b("TABLE"),width = 100,collapsible = TRUE,status = "primary",solidHeader = TRUE,
+               #select input to display confederation, country data 
+               selectInput("Data","Choose Data:",
+                           choices = c("World Best","UEFA","CAF","OFC","AFC","CONMEBOL","CONCACAF","Country Data")),
+                           conditionalPanel(condition = "input.Data == 'World Best'",
+                              column(6,textInput("date","insert date","6/7/2018")),
+                              column(6,textInput("range","insert range",50))),
+               
+                              
+               conditionalPanel(condition = "input.Data == 'UEFA'",
+                               column(6,textInput("date","insert date","6/7/2018")),
+                               column(6,textInput("range","insert range",10)),
+              tableOutput("plotTab")),
+           
+               conditionalPanel(condition = "input.Data == 'CAF'",
+                              column(6,textInput("date","insert date","12/12/2004")),
+                              column(6,textInput("range","insert range",10))),
+               
+               conditionalPanel(condition = "input.Data == 'OFC'",
+                              column(6,textInput("date","insert date","12/12/2004")),
+                              column(6,textInput("range","insert range",10))),
+               
+               conditionalPanel(condition = "input.Data == 'CONMEBOL'",
+                                column(6,textInput("date","insert date","12/12/2004")),
+                                column(6,textInput("range","insert range",10))),
+               
+               conditionalPanel(condition = "input.Data == 'CONCACAF'",
+                                column(6,textInput("date","insert date","12/12/2004")),
+                                column(6,textInput("range","insert range",10))),
+               
+               conditionalPanel(condition = "input.Data == 'AFC'",
+                                column(6,textInput("date","insert date","12/12/2004")),
+                                column(6,textInput("range","insert range",10))),
+               
+               conditionalPanel(condition = "input.Data == 'Country Data'",
+                                textInput("date","insert date","12/12/2004")),
+               
+              tableOutput("plotTable")
+                           )
+          
+           
+              
+               
+                           )
+               )
+           )
     )
    
-  )
-
+  
 
 server <- function(input,output){
   
@@ -117,6 +166,31 @@ server <- function(input,output){
     africa_best<-fifa%>%filter(confederation=="CAF",rank_date=="6/7/2018")%>%select(rank,country_full,total_points)%>%slice(1:10)
     ggplot(africa_best,aes(x=country_full,y=total_points))+geom_col()+coord_flip()
   })
+  #display table of world best
+  output$plotTable <- renderTable({
+    choosen_data <- input$Data
+    Date_input <- input$date
+    Range <- input$range
+    if(choosen_data == "World Best"){
+    world_data<-fifa%>%filter(rank<=Range,rank_date==Date_input)%>%select(rank,country_full,total_points)%>%arrange(desc(total_points))%>%slice(1:Range)
+    best_data<-world_data[,c(1,2,3)]
+    colnames(best_data)<-c("RANK","COUNTRY","POINTS")
+    widget_formattable<-formattable(best_data)
+   
+    
+    }else if(choosen_data == "UEFA"){
+      tabl_select<-fifa%>%filter(confederation==choosen_data,rank_date==Date_input)%>%select(rank,country_full,total_points)%>%arrange(desc(total_points))%>%slice(1:Range)
+      #selecting the columns to display
+      cho_data<-tabl_select[,c(1,2,3)]
+      #The display the table
+      
+      #change column names 
+      colnames(cho_data)<-c("RANK","COUNTRY","POINTS")
+      widget_formattable<-formattable(cho_data)      
+    }
+
+  })
+  
   #output europe's best
   output$europebest <- renderPlot({
     europe_best<-fifa%>%filter(confederation=="UEFA",rank_date=="6/7/2018")%>%select(rank,country_full,total_points)%>%slice(1:10)
