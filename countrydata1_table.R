@@ -10,3 +10,4 @@ slect_reduce<-counrty_select[,c(1,2,3,4)]
 colnames(slect_reduce)<-c("DATE","RANK","POINTS","CHANGE")
 #draw table
 widget_formattable<-formattable(slect_reduce)
+widget_formattable
