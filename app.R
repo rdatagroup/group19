@@ -16,8 +16,8 @@ ui <- dashboardPage(
     imageOutput("image1",height = 30),
     
     #get file
-    #data<-read.csv(file.choose(),header = TRUE),
-    #fifa<-as.data.frame(data),
+    data<-read.csv(file.choose(),header = TRUE),
+    fifa<-as.data.frame(data),
     
     
     tags$hr(),
@@ -110,7 +110,11 @@ ui <- dashboardPage(
                            choices = c("World Best","UEFA","CAF","OFC","AFC","CONMEBOL","CONCACAF","Country Data")),
                            conditionalPanel(condition = "input.Data == 'World Best'",
                               column(6,textInput("date","insert date","6/7/2018")),
+<<<<<<< HEAD
                               column(6,textInput("range","insert range",10))),
+=======
+                              column(6,textInput("range","insert range",50))),
+>>>>>>> 453a1ca387e4530336306ab22cc00c85031fe180
                
                               
                conditionalPanel(condition = "input.Data == 'UEFA'",
@@ -119,6 +123,7 @@ ui <- dashboardPage(
               tableOutput("plotTab")),
            
                conditionalPanel(condition = "input.Data == 'CAF'",
+<<<<<<< HEAD
                               column(6,textInput("date","insert date","6/7/2018")),
                               column(6,textInput("range","insert range",10))),
                
@@ -140,6 +145,29 @@ ui <- dashboardPage(
                
                conditionalPanel(condition = "input.Data == 'Country Data'",
                                 textInput("date","insert date","6/7/2018")),
+=======
+                              column(6,textInput("date","insert date","12/12/2004")),
+                              column(6,textInput("range","insert range",10))),
+               
+               conditionalPanel(condition = "input.Data == 'OFC'",
+                              column(6,textInput("date","insert date","12/12/2004")),
+                              column(6,textInput("range","insert range",10))),
+               
+               conditionalPanel(condition = "input.Data == 'CONMEBOL'",
+                                column(6,textInput("date","insert date","12/12/2004")),
+                                column(6,textInput("range","insert range",10))),
+               
+               conditionalPanel(condition = "input.Data == 'CONCACAF'",
+                                column(6,textInput("date","insert date","12/12/2004")),
+                                column(6,textInput("range","insert range",10))),
+               
+               conditionalPanel(condition = "input.Data == 'AFC'",
+                                column(6,textInput("date","insert date","12/12/2004")),
+                                column(6,textInput("range","insert range",10))),
+               
+               conditionalPanel(condition = "input.Data == 'Country Data'",
+                                textInput("date","insert date","12/12/2004")),
+>>>>>>> 453a1ca387e4530336306ab22cc00c85031fe180
                
               tableOutput("plotTable")
                            )
@@ -172,7 +200,11 @@ server <- function(input,output){
     Date_input <- input$date
     Range <- input$range
     if(choosen_data == "World Best"){
+<<<<<<< HEAD
     world_data<-fifa%>%filter(rank<=Range,rank_date==Date_input)%>%select(rank,country_full,total_points)%>%arrange(desc(total_points))
+=======
+    world_data<-fifa%>%filter(rank<=Range,rank_date==Date_input)%>%select(rank,country_full,total_points)%>%arrange(desc(total_points))%>%slice(1:Range)
+>>>>>>> 453a1ca387e4530336306ab22cc00c85031fe180
     best_data<-world_data[,c(1,2,3)]
     colnames(best_data)<-c("RANK","COUNTRY","POINTS")
     widget_formattable<-formattable(best_data)
