@@ -16,8 +16,8 @@ ui <- dashboardPage(
     imageOutput("image1",height = 30),
     
     #get file
-    data<-read.csv(file.choose(),header = TRUE),
-    fifa<-as.data.frame(data),
+    #data<-read.csv(file.choose(),header = TRUE),
+    #fifa<-as.data.frame(data),
     
     
     tags$hr(),
@@ -169,8 +169,8 @@ server <- function(input,output){
   #display table of world best
   output$plotTable <- renderTable({
     choosen_data <- input$Data
-    Date_input <- textOutput(date)
-    Range <-as.numeric(textOutput(range))
+    Date_input <- input$date
+    Range <- input$range
     if(choosen_data == "World Best"){
     world_data<-fifa%>%filter(rank<=Range,rank_date==Date_input)%>%select(rank,country_full,total_points)%>%arrange(desc(total_points))
     best_data<-world_data[,c(1,2,3)]
