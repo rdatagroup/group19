@@ -11,3 +11,5 @@ plot_bar
 
 plot_dR<-ggplot(world_best,aes(x=country_full,y=total_points))+geom_col()+coord_flip()
 
+plot_dR
+
