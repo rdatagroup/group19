@@ -5,21 +5,17 @@ library(DT)
 library(png)
 library(dplyr)
 library(formattable)
-#get file
-data<-read.csv(file.choose(),header = TRUE)
-
-fifa<-as.data.frame(data)
-
-#user interface begin
 
 ui <- dashboardPage(
   dashboardHeader(title = "FiFA World Ranking System"),
   dashboardSidebar(
     
     #the logo for the site
-    imageOutput("image1",height = 10),
+    imageOutput("image1",height = 30),
     
-   
+    #get file
+    data<-read.csv(file.choose(),header = TRUE),
+    fifa<-as.data.frame(data),
     
     
     tags$hr(),
@@ -111,9 +107,9 @@ ui <- dashboardPage(
                selectInput("Data","Choose Data:",
                            choices = c("World Best","UEFA","CAF","OFC","AFC","CONMEBOL","CONCACAF","Country Data")),
                            conditionalPanel(condition = "input.Data == 'World Best'",
-                              column(6,textInput("date","insert date",value = "6/7/2018")),
+                              column(6,dateInput("date","insert date",value = "6/7/2018",format = "mm/dd/yyyy")),
 
-                              column(6,textInput("range","insert range",50))),
+                              column(6,numericInput("range","insert range",50))),
                               
                conditionalPanel(condition = "input.Data == 'UEFA'",
                                column(6,textInput("date","insert date","6/7/2018")),
