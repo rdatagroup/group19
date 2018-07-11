@@ -7,7 +7,6 @@ library(dplyr)
 library(formattable)
 
 
-
 ui <- dashboardPage(
   dashboardHeader(title = "FiFA World Ranking System"),
   dashboardSidebar(
@@ -109,9 +108,9 @@ ui <- dashboardPage(
                selectInput("Data","Choose Data:",
                            choices = c("World Best","UEFA","CAF","OFC","AFC","CONMEBOL","CONCACAF","Country Data")),
                            conditionalPanel(condition = "input.Data == 'World Best'",
-                              column(6,textInput("date","insert date","6/7/2018")),
+                              column(6,dateInput("date","insert date",value = "6/7/2018",format = "mm/dd/yyyy")),
 
-                              column(6,textInput("range","insert range",50))),
+                              column(6,numericInput("range","insert range",50))),
                               
                conditionalPanel(condition = "input.Data == 'UEFA'",
                                column(6,textInput("date","insert date","6/7/2018")),
@@ -169,8 +168,8 @@ server <- function(input,output){
   #display table of world best
   output$plotTable <- renderTable({
     choosen_data <- input$Data
-    Date_input <- input$date
-    Range <- input$range
+    Date_input <-  input$date
+    Range <-  input$range
     if(choosen_data == "World Best"){
     world_data<-fifa%>%filter(rank<=Range,rank_date==Date_input)%>%select(rank,country_full,total_points)%>%arrange(desc(total_points))%>%slice(1:Range)
 
