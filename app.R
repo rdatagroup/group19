@@ -198,6 +198,7 @@ server <- function(input,output){
   output$europebest <- renderPlot({
     europe_best<-fifa%>%filter(confederation=="UEFA",rank_date=="6/7/2018")%>%select(rank,country_full,total_points)%>%slice(1:10)
     ggplot(europe_best,aes(x=country_full,y=total_points))+geom_col()+coord_flip()
+    
   })
   #output asia's best
   output$afcbest <- renderPlot({
@@ -243,3 +244,4 @@ server <- function(input,output){
   
 }
 shinyApp(ui=ui,server=server)
+
