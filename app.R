@@ -5,11 +5,7 @@ library(DT)
 library(png)
 library(dplyr)
 library(formattable)
-<<<<<<< HEAD
-=======
 
-
->>>>>>> 9b92ef3b72415a19abda4f96f0352918e865e013
 ui <- dashboardPage(
   dashboardHeader(title = "FiFA World Ranking System"),
   dashboardSidebar(
@@ -18,8 +14,8 @@ ui <- dashboardPage(
     imageOutput("image1",height = 30),
     
     #get file
-   # data<-read.csv(file.choose(),header = TRUE),
-    #fifa<-as.data.frame(data),
+    data<-read.csv(file.choose(),header = TRUE),
+    fifa<-as.data.frame(data),
     
     
     tags$hr(),
@@ -35,7 +31,7 @@ ui <- dashboardPage(
       menuSubItem("OFC", tabName = "OFC"),
       menuSubItem("CONCACAF",tabName = "CONCACAF")
     ),
-    menuItem( tags$h4("Bet Team"),
+    menuItem( tags$h4("Best Team"),
               
               menuSubItem("Year",tabName = "Year"),
               menuSubItem("Top10", tabName = "Top10"),
