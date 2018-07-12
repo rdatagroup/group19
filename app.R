@@ -175,11 +175,6 @@ server <- function(input,output){
     Range <-  input$range
     if(choosen_data == "World Best"){
     world_data<-fifa%>%filter(rank<=Range,rank_date==Date_input)%>%select(rank,country_full,total_points)%>%arrange(desc(total_points))%>%slice(1:Range)
-<<<<<<< HEAD
-    
-=======
-
->>>>>>> 0bfd97a195494c91c490b303729bab1fe784f94b
     best_data<-world_data[,c(1,2,3)]
     colnames(best_data)<-c("RANK","COUNTRY","POINTS")
     widget_formattable<-formattable(best_data)
