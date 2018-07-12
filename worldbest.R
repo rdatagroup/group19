@@ -10,4 +10,8 @@ plot_bar<-ggplot(world_best,aes(x=country_full,y=total_points))+geom_col()+coord
 plot_bar
 
 plot_dR<-ggplot(world_best,aes(x=country_full,y=total_points))+geom_col()+coord_flip()
+<<<<<<< HEAD
+plot_dR
+=======
 
+>>>>>>> 453a1ca387e4530336306ab22cc00c85031fe180

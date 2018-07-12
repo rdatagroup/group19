@@ -6,8 +6,6 @@ library(png)
 library(dplyr)
 library(formattable)
 
-
-
 ui <- dashboardPage(
   dashboardHeader(title = "FiFA World Ranking System"),
   dashboardSidebar(
@@ -33,7 +31,7 @@ ui <- dashboardPage(
       menuSubItem("OFC", tabName = "OFC"),
       menuSubItem("CONCACAF",tabName = "CONCACAF")
     ),
-    menuItem( tags$h4("Bet Team"),
+    menuItem( tags$h4("Best Team"),
               
               menuSubItem("Year",tabName = "Year"),
               menuSubItem("Top10", tabName = "Top10"),
@@ -109,38 +107,38 @@ ui <- dashboardPage(
                selectInput("Data","Choose Data:",
                            choices = c("World Best","UEFA","CAF","OFC","AFC","CONMEBOL","CONCACAF","Country Data")),
                            conditionalPanel(condition = "input.Data == 'World Best'",
-                              column(6,textInput("date","insert date","6/7/2018")),
-                              column(6,textInput("range","insert range",50))),
-               
+                              column(6,dateInput("date","insert date",value = "6/7/2018",format = "mm/dd/yyyy")),
+
+                              column(6,numericInput("range","insert range",50))),
                               
                conditionalPanel(condition = "input.Data == 'UEFA'",
                                column(6,textInput("date","insert date","6/7/2018")),
-                               column(6,textInput("range","insert range",10)),
-              tableOutput("plotTab")),
-           
+                               column(6,textInput("range","insert range",10))),
+
                conditionalPanel(condition = "input.Data == 'CAF'",
-                              column(6,textInput("date","insert date","12/12/2004")),
+                              column(6,textInput("date","insert date","6/7/2018")),
                               column(6,textInput("range","insert range",10))),
                
                conditionalPanel(condition = "input.Data == 'OFC'",
-                              column(6,textInput("date","insert date","12/12/2004")),
+                              column(6,textInput("date","insert date","6/7/2018")),
                               column(6,textInput("range","insert range",10))),
                
                conditionalPanel(condition = "input.Data == 'CONMEBOL'",
-                                column(6,textInput("date","insert date","12/12/2004")),
+                                column(6,textInput("date","insert date","6/7/2018")),
                                 column(6,textInput("range","insert range",10))),
                
                conditionalPanel(condition = "input.Data == 'CONCACAF'",
-                                column(6,textInput("date","insert date","12/12/2004")),
+                                column(6,textInput("date","insert date","6/7/2018")),
                                 column(6,textInput("range","insert range",10))),
                
                conditionalPanel(condition = "input.Data == 'AFC'",
-                                column(6,textInput("date","insert date","12/12/2004")),
+                                column(6,textInput("date","insert date","6/7/2018")),
                                 column(6,textInput("range","insert range",10))),
                
                conditionalPanel(condition = "input.Data == 'Country Data'",
-                                textInput("date","insert date","12/12/2004")),
+                                textInput("date","insert date","6/7/2018")),
                
+              
               tableOutput("plotTable")
                            )
           
@@ -160,8 +158,12 @@ server <- function(input,output){
   #plot_bar country data
  # output$worldbest <- renderPlot(ggplot(world_best,aes(x=country_full,y=total_points))+geom_col()+coord_flip())
  # output the country data
-  output$countrydata <- renderPlot(ggplot(country_data,aes(x=rank_date,y=previous_points))+geom_col()+coord_flip())
+  output$countrydata <- renderPlot({
+    country_data<-fifa%>%filter(country_abrv=="GER")%>%select(rank,previous_points,rank_date)
+    ggplot(country_data,aes(x=rank_date,y=previous_points))+geom_col()+coord_flip()})
+  
   #output africa best
+  
   output$africaBest <- renderPlot({
     africa_best<-fifa%>%filter(confederation=="CAF",rank_date=="6/7/2018")%>%select(rank,country_full,total_points)%>%slice(1:10)
     ggplot(africa_best,aes(x=country_full,y=total_points))+geom_col()+coord_flip()
@@ -169,11 +171,15 @@ server <- function(input,output){
   #display table of world best
   output$plotTable <- renderTable({
     choosen_data <- input$Data
-    Date_input <- input$date
-    Range <- input$range
+    Date_input <-  input$date
+    Range <-  input$range
     if(choosen_data == "World Best"){
     world_data<-fifa%>%filter(rank<=Range,rank_date==Date_input)%>%select(rank,country_full,total_points)%>%arrange(desc(total_points))%>%slice(1:Range)
+<<<<<<< HEAD
     
+=======
+
+>>>>>>> 0bfd97a195494c91c490b303729bab1fe784f94b
     best_data<-world_data[,c(1,2,3)]
     colnames(best_data)<-c("RANK","COUNTRY","POINTS")
     widget_formattable<-formattable(best_data)
@@ -198,6 +204,7 @@ server <- function(input,output){
   output$europebest <- renderPlot({
     europe_best<-fifa%>%filter(confederation=="UEFA",rank_date=="6/7/2018")%>%select(rank,country_full,total_points)%>%slice(1:10)
     ggplot(europe_best,aes(x=country_full,y=total_points))+geom_col()+coord_flip()
+    
   })
   #output asia's best
   output$afcbest <- renderPlot({
@@ -243,3 +250,4 @@ server <- function(input,output){
   
 }
 shinyApp(ui=ui,server=server)
+

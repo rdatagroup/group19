@@ -11,3 +11,4 @@ best_data<-world_data[,c(1,2,3)]
 #change column names 
 colnames(best_data)<-c("RANK","COUNTRY","POINTS")
 widget_formattable<-formattable(best_data)
+widget_formattable
