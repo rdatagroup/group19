@@ -173,6 +173,7 @@ server <- function(input,output){
     Range <- input$range
     if(choosen_data == "World Best"){
     world_data<-fifa%>%filter(rank<=Range,rank_date==Date_input)%>%select(rank,country_full,total_points)%>%arrange(desc(total_points))%>%slice(1:Range)
+    
     best_data<-world_data[,c(1,2,3)]
     colnames(best_data)<-c("RANK","COUNTRY","POINTS")
     widget_formattable<-formattable(best_data)
@@ -181,12 +182,14 @@ server <- function(input,output){
     }else if(choosen_data == "UEFA"){
       tabl_select<-fifa%>%filter(confederation==choosen_data,rank_date==Date_input)%>%select(rank,country_full,total_points)%>%arrange(desc(total_points))%>%slice(1:Range)
       #selecting the columns to display
+      #new_data<-within(tabl_select,rank1<-ave(total_points,FUN = function(x)rev(order(x))))
       cho_data<-tabl_select[,c(1,2,3)]
       #The display the table
       
       #change column names 
-      colnames(cho_data)<-c("RANK","COUNTRY","POINTS")
-      widget_formattable<-formattable(cho_data)      
+      colnames(cho_data)<-c("WORLD-RANK","COUNTRY","POINTS")
+      widget_formattable<-formattable(cho_data)
+     # data3<-cho_data%>%kable()%>%kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"),font_size = 15,position = "center")%>%row_spec(0,color = "white",background = "green")%>%cat(.,file = "data.html")
     }
 
   })
