@@ -76,7 +76,17 @@ ui <- dashboardPage(
          box(title =tags$b("CHART"),width = 100,collapsible = TRUE,status = "primary",solidHeader = TRUE,
                 tabItems(
       tabItem(tabName = "CAF",
+
+       HEAD
+              africa_best<-fifa%>%filter(confederation==textOutput("result"),rank_date=="6/7/2018")%>% select(rank,country_full,total_points)%>%slice(1:10),
               plotOutput("africaBest", click = "plot ME")
+
+      csvdata <-read.csv(file.choose(),header = TRUE),
+           DT::dataTableOutput("csvdata")
+
+
+              plotOutput("africaBest", click = "plot ME")
+ master
       ),
       tabItem(tabName = "UEFA",
               plotOutput("europebest")),
