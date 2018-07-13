@@ -14,11 +14,8 @@ ui <- dashboardPage(
     imageOutput("image1",height = 10),
     
     #get file
-<<<<<<< HEAD
-   data<-read.csv(file.choose(),header = TRUE),
-=======
     data<-read.csv(file.choose(),header = TRUE),
->>>>>>> cfef5a005602a9f9541c41084180265d5e0f6c2c
+
     fifa<-as.data.frame(data),
     
     
@@ -111,9 +108,9 @@ ui <- dashboardPage(
                selectInput("Data","Choose Data:",
                            choices = c("World Best","UEFA","CAF","OFC","AFC","CONMEBOL","CONCACAF","Country Data")),
                            conditionalPanel(condition = "input.Data == 'World Best'",
-                              column(6,dateInput("date","insert date",value = "6/7/2018",format = "mm/dd/yyyy")),
+                              column(6,textInput("date","insert date",value = "6/7/2018")),
 
-                              column(6,numericInput("range","insert range",50))),
+                              column(6,textInput("range","insert range",50))),
                               
                conditionalPanel(condition = "input.Data == 'UEFA'",
                                column(6,textInput("date","insert date","6/7/2018")),
