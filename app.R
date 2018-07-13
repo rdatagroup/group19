@@ -12,11 +12,11 @@ ui <- dashboardPage(
   dashboardSidebar(
     
     #the logo for the site
-    imageOutput("image1",height = 30),
+    imageOutput("image1",height = 10),
     
     #get file
-   # data<-read.csv(file.choose(),header = TRUE),
-    #fifa<-as.data.frame(data),
+   data<-read.csv(file.choose(),header = TRUE),
+    fifa<-as.data.frame(data),
     
     
     tags$hr(),
