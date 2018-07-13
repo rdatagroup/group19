@@ -3,6 +3,10 @@ library(shinydashboard)
 library(ggplot2)
 library(DT)
 <<<<<<< HEAD
+library(formattable)
+library(png)
+=======
+<<<<<<< HEAD
 library(png)
 library(dplyr)
 
@@ -10,6 +14,7 @@ library(dplyr)
 =======
 library()
 >>>>>>> 453a1ca387e4530336306ab22cc00c85031fe180
+>>>>>>> 9b92ef3b72415a19abda4f96f0352918e865e013
 
 ui <- dashboardPage(
   dashboardHeader(title = "FiFA World Ranking System"),

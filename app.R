@@ -6,7 +6,6 @@ library(png)
 library(dplyr)
 library(formattable)
 
-
 ui <- dashboardPage(
   dashboardHeader(title = "FiFA World Ranking System"),
   dashboardSidebar(
@@ -15,7 +14,11 @@ ui <- dashboardPage(
     imageOutput("image1",height = 10),
     
     #get file
+<<<<<<< HEAD
    data<-read.csv(file.choose(),header = TRUE),
+=======
+    data<-read.csv(file.choose(),header = TRUE),
+>>>>>>> cfef5a005602a9f9541c41084180265d5e0f6c2c
     fifa<-as.data.frame(data),
     
     
@@ -32,7 +35,7 @@ ui <- dashboardPage(
       menuSubItem("OFC", tabName = "OFC"),
       menuSubItem("CONCACAF",tabName = "CONCACAF")
     ),
-    menuItem( tags$h4("Bet Team"),
+    menuItem( tags$h4("Best Team"),
               
               menuSubItem("Year",tabName = "Year"),
               menuSubItem("Top10", tabName = "Top10"),
@@ -159,8 +162,12 @@ server <- function(input,output){
   #plot_bar country data
  # output$worldbest <- renderPlot(ggplot(world_best,aes(x=country_full,y=total_points))+geom_col()+coord_flip())
  # output the country data
-  output$countrydata <- renderPlot(ggplot(country_data,aes(x=rank_date,y=previous_points))+geom_col()+coord_flip())
+  output$countrydata <- renderPlot({
+    country_data<-fifa%>%filter(country_abrv=="GER")%>%select(rank,previous_points,rank_date)
+    ggplot(country_data,aes(x=rank_date,y=previous_points))+geom_col()+coord_flip()})
+  
   #output africa best
+  
   output$africaBest <- renderPlot({
     africa_best<-fifa%>%filter(confederation=="CAF",rank_date=="6/7/2018")%>%select(rank,country_full,total_points)%>%slice(1:10)
     ggplot(africa_best,aes(x=country_full,y=total_points))+geom_col()+coord_flip()
@@ -172,7 +179,6 @@ server <- function(input,output){
     Range <-  input$range
     if(choosen_data == "World Best"){
     world_data<-fifa%>%filter(rank<=Range,rank_date==Date_input)%>%select(rank,country_full,total_points)%>%arrange(desc(total_points))%>%slice(1:Range)
-
     best_data<-world_data[,c(1,2,3)]
     colnames(best_data)<-c("RANK","COUNTRY","POINTS")
     widget_formattable<-formattable(best_data)
@@ -181,12 +187,14 @@ server <- function(input,output){
     }else if(choosen_data == "UEFA"){
       tabl_select<-fifa%>%filter(confederation==choosen_data,rank_date==Date_input)%>%select(rank,country_full,total_points)%>%arrange(desc(total_points))%>%slice(1:Range)
       #selecting the columns to display
+      #new_data<-within(tabl_select,rank1<-ave(total_points,FUN = function(x)rev(order(x))))
       cho_data<-tabl_select[,c(1,2,3)]
       #The display the table
       
       #change column names 
-      colnames(cho_data)<-c("RANK","COUNTRY","POINTS")
-      widget_formattable<-formattable(cho_data)      
+      colnames(cho_data)<-c("WORLD-RANK","COUNTRY","POINTS")
+      widget_formattable<-formattable(cho_data)
+     # data3<-cho_data%>%kable()%>%kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"),font_size = 15,position = "center")%>%row_spec(0,color = "white",background = "green")%>%cat(.,file = "data.html")
     }
 
   })
@@ -195,6 +203,7 @@ server <- function(input,output){
   output$europebest <- renderPlot({
     europe_best<-fifa%>%filter(confederation=="UEFA",rank_date=="6/7/2018")%>%select(rank,country_full,total_points)%>%slice(1:10)
     ggplot(europe_best,aes(x=country_full,y=total_points))+geom_col()+coord_flip()
+    
   })
   #output asia's best
   output$afcbest <- renderPlot({
@@ -240,3 +249,4 @@ server <- function(input,output){
   
 }
 shinyApp(ui=ui,server=server)
+
