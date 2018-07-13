@@ -6,7 +6,9 @@ library(png)
 library(dplyr)
 library(formattable)
 
+
 ui <- dashboardPage(
+
   dashboardHeader(title = "FiFA World Ranking System"),
   dashboardSidebar(
     
@@ -107,9 +109,9 @@ ui <- dashboardPage(
                selectInput("Data","Choose Data:",
                            choices = c("World Best","UEFA","CAF","OFC","AFC","CONMEBOL","CONCACAF","Country Data")),
                            conditionalPanel(condition = "input.Data == 'World Best'",
-                              column(6,dateInput("date","insert date",value = "6/7/2018",format = "mm/dd/yyyy")),
+                              column(6,textInput("date","insert date","6/7/2018")),
 
-                              column(6,numericInput("range","insert range",50))),
+                              column(6,textInput("range","insert range",50))),
                               
                conditionalPanel(condition = "input.Data == 'UEFA'",
                                column(6,textInput("date","insert date","6/7/2018")),
@@ -136,14 +138,16 @@ ui <- dashboardPage(
                                 column(6,textInput("range","insert range",10))),
                
                conditionalPanel(condition = "input.Data == 'Country Data'",
-                                textInput("date","insert date","6/7/2018")),
+                                column(6,textInput("country","Choose Country","GER")),
+                                column(6,textInput("yr","Choose Year","2018"))),
+                                
                
+               tableOutput("plotTable")
               
-              tableOutput("plotTable")
                            )
           
            
-              
+           
                
                            )
                )
@@ -173,6 +177,8 @@ server <- function(input,output){
     choosen_data <- input$Data
     Date_input <-  input$date
     Range <-  input$range
+    yearly_data<-input$yr
+    country_spec<-input$country
     if(choosen_data == "World Best"){
     world_data<-fifa%>%filter(rank<=Range,rank_date==Date_input)%>%select(rank,country_full,total_points)%>%arrange(desc(total_points))%>%slice(1:Range)
     best_data<-world_data[,c(1,2,3)]
@@ -180,20 +186,26 @@ server <- function(input,output){
     widget_formattable<-formattable(best_data)
    
     
-    }else if(choosen_data == "UEFA"){
+    }else if(choosen_data%in%c("UEFA","CAF","CONCACAF","OFC","AFC","CONMEBOL")){#choosen_data == "UEFA"){
       tabl_select<-fifa%>%filter(confederation==choosen_data,rank_date==Date_input)%>%select(rank,country_full,total_points)%>%arrange(desc(total_points))%>%slice(1:Range)
       #selecting the columns to display
-      #new_data<-within(tabl_select,rank1<-ave(total_points,FUN = function(x)rev(order(x))))
       cho_data<-tabl_select[,c(1,2,3)]
       #The display the table
       
       #change column names 
       colnames(cho_data)<-c("WORLD-RANK","COUNTRY","POINTS")
       widget_formattable<-formattable(cho_data)
-     # data3<-cho_data%>%kable()%>%kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"),font_size = 15,position = "center")%>%row_spec(0,color = "white",background = "green")%>%cat(.,file = "data.html")
+    }else if(choosen_data=="Country Data"){
+      country_data<-fifa%>%filter(filtered_date<-substring(rank_date,6)==yearly_data,country_abrv==country_spec)%>%select(rank,total_points,rank_change,last_year_avg,last_year_avg_weighted,cur_year_avg,cur_year_avg_weighted)
+      cont_data<-country_data[,c(1,3,4,5,6,7,2)]
+      #The display the table
+      
+      #change column names 
+      #colnames(cont_data)<-c("WORLD-RANK","COUNTRY","POINTS")
+      widget_formattable<-formattable(cont_data)
     }
 
-  })
+  },striped = T,width = "600",align ="c")
   
   #output europe's best
   output$europebest <- renderPlot({
