@@ -10,7 +10,7 @@ data<-read.csv(file.choose(),header = TRUE)
 
 fifa<-as.data.frame(data)
 
-#user interface begin
+#user interface
 
 ui <- dashboardPage(
   dashboardHeader(title = "FiFA World Ranking System"),
@@ -44,7 +44,7 @@ ui <- dashboardPage(
     ),
     menuItem( tags$h4("Prediction"),
               
-              menuSubItem("Winning Team",tabName = "Winning Team"),
+              menuSubItem("Winning Team",tabName = "Winning_Team"),
               menuSubItem("CAF", tabName = "Slider"),
               menuSubItem("CONMEBOL",tabName = "off")
               
@@ -71,8 +71,15 @@ ui <- dashboardPage(
       )
       )
     ),
+    #this colummn output team appearing in first position number times
     column(6,
-         box(title = tags$b("YEAR"),width = 50,background = "blue",solidHeader = TRUE,collapsible = TRUE,status = "primary")  
+         box(title = tags$b("YEAR"),width = 50,background = "blue",solidHeader = TRUE,collapsible = TRUE,status = "primary",
+             tabItems(
+               tabItem(tabName = "Winning_Team",
+                       plotOutput("visual")
+                       )
+             )
+             )  
     )
     ),
     fluidRow(
@@ -203,6 +210,12 @@ server <- function(input,output){
   output$europebest <- renderPlot({
     europe_best<-fifa%>%filter(confederation=="UEFA",rank_date=="6/7/2018")%>%select(rank,country_full,total_points)%>%slice(1:10)
     ggplot(europe_best,aes(x=country_full,y=total_points))+geom_col()+coord_flip()
+    
+  })
+  #output of number of times in first position
+  output$visual <- renderPlot({
+    visuali<-fifa%>%filter(rank_date=="8/8/1993")%>%select(rank,country_full,total_points)%>%slice(1:6)
+    ggplot(data=visuali,mapping =  aes(x=country_full,y=rank))+geom_boxplot()
     
   })
   #output asia's best
