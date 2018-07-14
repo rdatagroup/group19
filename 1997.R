@@ -43,11 +43,14 @@ newdata1
 OFC <- subset(data2,confederation == "OFC")
 OFC
 
-data_sorted <-ddply(OFC,.(country_full),
-                    summarize,sum=sum(previous_points))
 
-newdata2 <- data_sorted[order(-data_sorted$sum), ]
+data_sorted <-ddply(OFC,.(country_full),
+                    summarize,Points_OFC=sum(previous_points))
+
+newdata2 <- data_sorted[order(-data_sorted$Points_OFC), ]
 newdata2
+ggplot(newdata2,aes(x=country_full,y=Points_OFC))+geom_col()+coord_flip()
+
 
 #filtering for CAF confederation 
 CAF <- subset(data2,confederation == "CAF")
@@ -58,6 +61,7 @@ data_sorted <-ddply(CAF,.(country_full),
 
 newdata3 <- data_sorted[order(-data_sorted$sum), ]
 newdata3
+ggplot(newdata3,aes(x=country_full,y=sum))+geom_col()+coord_flip()
 #filtering for  CONCACAFconfederation 
 CONCACAF <- subset(data2,confederation == "CONCACAF")
 CONCACAF
