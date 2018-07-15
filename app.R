@@ -43,7 +43,7 @@ ui <- dashboardPage(
               
               menuSubItem("Winning Team",tabName = "Winning_Team"),
               menuSubItem("CAF", tabName = "Slider"),
-              menuSubItem("CONMEBOL",tabName = "off")
+              menuSubItem("off",tabName = "off")
               
     )
   )
@@ -55,7 +55,7 @@ ui <- dashboardPage(
     fluidRow(
       column(6,
       box(
-        title = tags$b("controls"),width = 50, background = "blue",solidHeader = TRUE,collapsible = TRUE,status = 
+        title = tags$b("Best"),width = 50,solidHeader = TRUE,collapsible = TRUE,status = 
           "primary",
         tabItems(
           tabItem(tabName = "Slider",
@@ -63,8 +63,11 @@ ui <- dashboardPage(
                     min = 1,max=100, value = 50)
         ),
         tabItem(tabName = "off",
-                box("plot1", h2("off control h2 font"))
-                )
+              
+                    tags$b("Times a country has been ranked first"),
+                tags$hr(),
+                    tableOutput("counter"))
+        
       )
       )
     ),
@@ -182,7 +185,7 @@ server <- function(input,output){
     Date_input <-  input$date
     Range <-  input$range
     if(choosen_data == "World Best"){
-    world_data<-fifa%>%filter(rank<=Range,rank_date==Date_input)%>%select(rank,country_full,total_points)%>%arrange(desc(total_points))%>%slice(1:Range)
+    world_data<-fifa%>%filter(rank==Range,rank_date==Date_input)%>%select(rank,country_full,total_points)%>%arrange(desc(total_points))%>%slice(1:Range)
     best_data<-world_data[,c(1,2,3)]
     colnames(best_data)<-c("RANK","COUNTRY","POINTS")
     widget_formattable<-formattable(best_data)
@@ -241,6 +244,13 @@ server <- function(input,output){
     world_best_data<-fifa%>%filter(rank<=10,rank_date=="6/7/2018")%>%select(rank,country_full,total_points)
     ggplot( world_best_data,aes(x=country_full,y=total_points))+geom_col()+coord_flip()
   })
+  #number of times country has been ranked first
+  output$counter <- renderTable({
+    
+    count_best<-fifa%>%filter(rank=="1")%>%select(rank,country_full,total_points)
+    count(count_best,c("country_full","rank"))
+  })
+  
   #choice made of the select option
   output$result <- renderText(paste(input$conferderation))
   
