@@ -5,15 +5,12 @@ library(DT)
 library(png)
 library(dplyr)
 library(formattable)
-<<<<<<< HEAD
+
 #get file
 data<-read.csv(file.choose(),header = TRUE)
-
 fifa<-as.data.frame(data)
 
-#user interface
-=======
->>>>>>> cf7e51022022461278665fe4ec0ac6ff32914e3e
+
 
 ui <- dashboardPage(
   dashboardHeader(title = "FiFA World Ranking System"),
@@ -21,11 +18,6 @@ ui <- dashboardPage(
     
     #the logo for the site
     imageOutput("image1",height = 30),
-    
-    #get file
-    data<-read.csv(file.choose(),header = TRUE),
-    fifa<-as.data.frame(data),
-    
     
     tags$hr(),
     
