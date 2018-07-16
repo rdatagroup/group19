@@ -5,6 +5,7 @@ library(DT)
 library(png)
 library(dplyr)
 library(formattable)
+library(plyr)
 
 #get file
 data<-read.csv(file.choose(),header = TRUE)
@@ -55,12 +56,12 @@ ui <- dashboardPage(
     fluidRow(
       column(6,
       box(
-        title = tags$b("Best"),width = 50,solidHeader = TRUE,collapsible = TRUE,status = 
+        title = tags$b("Best"),width = 70,solidHeader = TRUE,collapsible = TRUE,status = 
           "primary",
         tabItems(
           tabItem(tabName = "Slider",
         sliderInput("slider","Observations:",
-                    min = 1,max=100, value = 50)
+                   min = 1,max=100, value = 50)
         ),
         tabItem(tabName = "off",
               
@@ -118,9 +119,9 @@ ui <- dashboardPage(
                selectInput("Data","Choose Data:",
                            choices = c("World Best","UEFA","CAF","OFC","AFC","CONMEBOL","CONCACAF","Country Data")),
                            conditionalPanel(condition = "input.Data == 'World Best'",
-                              column(6,dateInput("date","insert date",value = "6/7/2018",format = "mm/dd/yyyy")),
+                              column(6,textInput("date","insert date",value = "6/7/2018")),
 
-                              column(6,numericInput("range","insert range",50))),
+                              column(6,textInput("range","insert range",50))),
                               
                conditionalPanel(condition = "input.Data == 'UEFA'",
                                column(6,textInput("date","insert date","6/7/2018")),
@@ -247,8 +248,8 @@ server <- function(input,output){
   #number of times country has been ranked first
   output$counter <- renderTable({
     
-    count_best<-fifa%>%filter(rank=="1")%>%select(rank,country_full,total_points)
-    count(count_best,c("country_full","rank"))
+    count_best<-fifa%>%filter(rank=="1")%>%select(rank,country_full,rank_date)
+    count(count_best,country_full,rank)
   })
   
   #choice made of the select option
