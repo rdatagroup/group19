@@ -6,6 +6,10 @@ library(png)
 library(dplyr)
 library(formattable)
 
+#get file
+data<-read.csv(file.choose(),header = TRUE)
+fifa<-as.data.frame(data)
+
 ui <- dashboardPage(
   dashboardHeader(title = "FiFA World Ranking System"),
   dashboardSidebar(
@@ -13,9 +17,7 @@ ui <- dashboardPage(
     #the logo for the site
     imageOutput("image1",height = 30),
     
-    #get file
-    data<-read.csv(file.choose(),header = TRUE),
-    fifa<-as.data.frame(data),
+   
     
     
     tags$hr(),
