@@ -11,15 +11,27 @@ library(formattable)
 library(markdown)
 library(lubridate)
 library(plyr)
+library(stringr)
+library(bsselectR)
+
+data<-read.csv(file.choose(),header = TRUE)
+fifa<-as.data.frame(data)
 dates <- as.Date(data$rank_date, 
                  format = '%Y-%m-%d')
-data<-read.csv(file.choose(),header = TRUE)
-data2<-ddply(data,.(country_full,confederation),
-            summarize,Total_Points_Earned=sum(previous_points))
+data2<-ddply(fifa,.(country_full,rank,confederation),
+            summarize,Total_Points_Earned=previous_points)
 desc <- data2[order(-data2$Total_Points_Earned), ]
+agg<-split(desc,desc$country_full)
+trial<-do.call(rbind,lapply(agg,function(chunk) chunk[which.max(chunk$Total_Points_Earned),]))
+agg3 <- ddply(trial, .(rank),
+               function(x)x[x$Total_Points_Earned==max(x$Total_Points_Earned), ])
+
+            
+             
+
 #analysis for 2018 
 
-data3 <-data  %>%
+data3 <-fifa %>%
   
   select(rank,country_full,
          previous_points,rank_change,confederation,rank_date)%>%
@@ -29,9 +41,13 @@ data3 <-data  %>%
 
 data4<-ddply(data3,.(country_full,confederation),
              summarize,Total_Points_Earned=sum(previous_points))
-desc1 <- data4[order(-data4$Total_Points_Earned), ]
+desc1x <- data4[order(-data4$Total_Points_Earned), ]
+agg<-split(desc1x,desc$rank)
+agg2<-lapply(agg,
+             function(chunk) chunk[which.max(chunk$Total_Points_Earned),])
+desc1<-do.call(rbind,lapply(agg,function(chunk) chunk[which.max(chunk$Total_Points_Earned),]))
 #analysis for 2017
-data5 <-data  %>%
+data5 <-fifa %>%
   
   select(rank,country_full,
          previous_points,rank_change,confederation,rank_date)%>%
@@ -39,12 +55,16 @@ data5 <-data  %>%
                  as.Date("2017-01-12"), 
                  as.Date("2017-12-21")))
 data_sorted_2017<-ddply(data5,.(country_full,confederation),
-                        summarize,Points_2017=sum(previous_points))
+                        summarize,Points_2017=previous_points)
 
-desc2 <- data_sorted_2017[order(-data_sorted_2017$Points_2017), ]
+desc2x <- data_sorted_2017[order(-data_sorted_2017$Points_2017), ]
+agg<-split(desc2x,desc$rank)
+agg2<-lapply(agg,
+             function(chunk) chunk[which.max(chunk$Total_Points_Earned),])
+desc2<-do.call(rbind,lapply(agg,function(chunk) chunk[which.max(chunk$Total_Points_Earned),]))
 #analysis for 2016
 
-data6 <-data  %>%
+data6 <-fifa %>%
   
   select(rank,country_full,
          previous_points,rank_change,confederation,rank_date)%>%
@@ -57,7 +77,7 @@ desc3 <- data_sorted_2016[order(-data_sorted_2016$Points_2016), ]
 
 #analysis for 2015
 
-data7 <-data  %>%
+data7 <-fifa %>%
   
   select(rank,country_full,
          previous_points,rank_change,confederation,rank_date)%>%
@@ -69,7 +89,7 @@ data_sorted_2015<-ddply(data7,.(country_full,confederation),
 desc4 <- data_sorted_2015[order(-data_sorted_2015$Point_2015), ]
 
 #analysis for 2014
-data8 <-data  %>%
+data8 <-fifa  %>%
   
   select(rank,country_full,
          previous_points,rank_change,confederation,rank_date)%>%
@@ -82,7 +102,7 @@ data_sorted_2014<-ddply(data8,.(country_full,confederation),
 #sort in descending order
 desc5 <- data_sorted_2014[order(-data_sorted_2014$Points_2014), ]
 #analysis of 2013
-data9 <-data  %>%
+data9 <-fifa %>%
   
   select(rank,country_full,
          previous_points,rank_change,confederation,rank_date)%>%
@@ -96,7 +116,7 @@ data_sorted_2013 <-ddply(data9,.(country_full,confederation),
 #sort in descending order
 desc6 <- data_sorted_2013[order(-data_sorted_2013$Point_2013), ]
 #analysis for 2012
-data10<-data  %>%
+data10<-fifa %>%
   
   select(rank,country_full,
          previous_points,rank_change,confederation,rank_date)%>%
@@ -110,7 +130,7 @@ data_sorted_2012 <-ddply(data10,.(country_full,confederation),
 #sort in descending order
 desc7 <- data_sorted_2012[order(-data_sorted_2012$Points_2012), ]
 #analysis for 2011
-data11 <-data  %>%
+data11 <-fifa  %>%
   
   select(rank,country_full,
          previous_points,rank_change,confederation,rank_date)%>%
@@ -124,7 +144,7 @@ data_sorted_2011 <-ddply(data11,.(country_full,confederation),
 #sort in descending order
 desc8<- data_sorted_2011[order(-data_sorted_2011$Point_2011), ]
 #analysis for 2010
-data12 <-data  %>%
+data12 <-fifa %>%
   
   select(rank,country_full,
          previous_points,rank_change,confederation,rank_date)%>%
@@ -139,7 +159,7 @@ data_sorted_2010 <-ddply(data12,.(country_full),
 #sort in descending order
 desc9 <- data_sorted_2010[order(-data_sorted_2010$Points_2010), ]
 #analysis for 2009
-data13 <-data  %>%
+data13 <-fifa  %>%
   
   select(rank,country_full,
          previous_points,rank_change,confederation,rank_date)%>%
@@ -154,7 +174,7 @@ data_sorted_2009 <-ddply(data13,.(country_full),
 #sort in descending order
 desc10 <- data_sorted_2009[order(-data_sorted_2009$Point_2009), ]
 #analysis for 2008
-data14 <-data  %>%
+data14 <-fifa %>%
   
   select(rank,country_full,
          previous_points,rank_change,confederation,rank_date)%>%
@@ -168,7 +188,7 @@ data_sorted_2008 <-ddply(data14,.(country_full),
 #sort in descending order
 desc11<- data_sorted_2008[order(-data_sorted_2008$Point_2008), ]
 #analysis for 2007
-data15 <-data  %>%
+data15 <-fifa  %>%
   
   select(rank,country_full,
          previous_points,rank_change,confederation,rank_date)%>%
@@ -184,7 +204,7 @@ data_sorted_2007
 desc12 <- data_sorted_2007[order(-data_sorted_2007$Points_2007), ]
 #analysis for 2006
 
-data16 <-data  %>%
+data16 <-fifa  %>%
   
   select(rank,country_full,
          previous_points,rank_change,confederation,rank_date)%>%
@@ -197,7 +217,7 @@ data_sorted_2006 <-ddply(data16,.(country_full),
 #sort in descending order
 desc13 <- data_sorted_2006[order(-data_sorted_2006$Points_2006), ]
 #analysis for 2005
-data17 <-data  %>%
+data17 <-fifa  %>%
   
   select(rank,country_full,
          previous_points,rank_change,confederation,rank_date)%>%
@@ -212,7 +232,7 @@ data_sorted_2005
 desc14 <- data_sorted_2005[order(-data_sorted_2005$Points_2005), ]
 
 #analysis for 2004
-data18 <-data  %>%
+data18 <-fifa  %>%
   
   select(rank,country_full,
          previous_points,rank_change,confederation,rank_date)%>%
@@ -226,7 +246,7 @@ data_sorted_2004 <-ddply(data18,.(country_full),
 desc15 <- data_sorted_2004[order(-data_sorted_2004$Points_2004), ]
 #analysis for 2003
 
-data19 <-data  %>%
+data19 <-fifa  %>%
   
   select(rank,country_full,
          previous_points,rank_change,confederation,rank_date)%>%
@@ -241,7 +261,7 @@ data_sorted_2003 <-ddply(data19,.(country_full),
 desc16 <- data_sorted_2003[order(-data_sorted_2003$Points_2003), ]
 
 #analysis for 2002
-data20 <-data  %>%
+data20 <-fifa  %>%
   
   select(rank,country_full,
          previous_points,rank_change,confederation,rank_date)%>%
@@ -255,7 +275,7 @@ data_sorted_2002 <-ddply(data20,.(country_full),
 #sort in descending order
 desc17 <- data_sorted_2002[order(-data_sorted_2002$Points_2002), ]
 #analysis for 2001
-data21 <-data  %>%
+data21 <-fifa  %>%
   
   select(rank,country_full,
          previous_points,rank_change,confederation,rank_date)%>%
@@ -268,7 +288,7 @@ data_sorted_2001 <-ddply(data21,.(country_full),
 #sort in descending order
 desc18 <- data_sorted_2001[order(-data_sorted_2001$Points_2001), ]
 #analysis for 2000
-data22 <-data  %>%
+data22 <-fifa  %>%
   
   select(rank,country_full,
          previous_points,rank_change,confederation,rank_date)%>%
@@ -296,7 +316,7 @@ data_sorted_1999 <-ddply(data23,.(country_full),
 #sort in descending order
 desc20 <- data_sorted_1999[order(-data_sorted_1999$Points_1999), ]
 #analysis for 1998
-data24 <-data  %>%
+data24 <-fifa  %>%
   
   select(rank,country_full,
          previous_points,rank_change,confederation,rank_date)%>%
@@ -312,7 +332,7 @@ data_sorted_1998 <-ddply(data24,.(country_full),
 desc21 <- data_sorted_1998[order(-data_sorted_1998$Points_1998), ]
 #analysis for 1997
 
-data25 <-data  %>%
+data25 <-fifa  %>%
   
   select(rank,country_full,
          previous_points,rank_change,confederation,rank_date)%>%
@@ -327,7 +347,7 @@ data_sorted_1997 <-ddply(data25,.(country_full),
 desc22 <- data_sorted_1997[order(-data_sorted_1997$Points_1997), ]
 #analsis for 1996
 
-data26 <-data  %>%
+data26 <-fifa  %>%
   
   select(rank,country_full,
          previous_points,rank_change,confederation,rank_date)%>%
@@ -342,7 +362,7 @@ data_sorted_1996 <-ddply(data26,.(country_full),
 desc23 <- data_sorted_1996[order(-data_sorted_1996$Points_1996), ]
 
 #analysis for 1995
-data27 <-data  %>%
+data27 <-fifa  %>%
   select(rank,country_full,
          previous_points,rank_change,confederation,rank_date)%>%
   filter(between(dates, 
@@ -354,7 +374,7 @@ data_sorted_1995 <-ddply(data27,.(country_full),
 #sort in descending order
 desc24 <- data_sorted_1995[order(-data_sorted_1995$Points_1995), ]
 #analysis for 1994
-data28 <-data  %>%
+data28 <-fifa  %>%
   
   select(rank,country_full,
          previous_points,rank_change,confederation,rank_date)%>%
@@ -368,7 +388,7 @@ data_sorted_1994 <-ddply(data28,.(country_full),
 #sort in descending order
 desc25 <- data_sorted_1994[order(-data_sorted_1994$Points_1994), ]
 #analysis for 1993
-data29 <-data  %>%
+data29 <-fifa  %>%
   
   select(rank,country_full,
          previous_points,rank_change,confederation,rank_date)%>%
@@ -430,7 +450,6 @@ ui <- dashboardPage(
                           verbatimTextOutput("summary")
                  ),
                  navbarMenu("More",
-          
                             tabPanel("2018",DT::dataTableOutput("table1")),
                             tabPanel("2017",DT::dataTableOutput("table2")),
                             tabPanel("2016",DT::dataTableOutput("table3")),
@@ -457,8 +476,10 @@ ui <- dashboardPage(
                             tabPanel("1995",DT::dataTableOutput("table24")),
                             tabPanel("1994",DT::dataTableOutput("table25")),
                             tabPanel("1993",DT::dataTableOutput("table26"))
+                            
                  ),
                  textOutput("result"),
+                 
                  tabPanel("Data",
                           # Select type of trend to plot
                           selectInput(inputId = "country_full", label = strong("Trend index"),
@@ -561,23 +582,20 @@ server <- function(input,output){
   # Subset data
   selected_trends <- reactive({
     req(input$country_full)
+    fifa<-as.data.frame(data)
     count <- input$country_full
     
-    subset(data,country_full=="count")
+    subset(fifa,country_full=="count")
      
   })
   # Create scatterplot object the plotOutput function is expecting
   output$lineplot <- renderPlot({
-    color = "#434343"
-  #par(mar = c(4, 4, 1, 1))
- # plot(selected_trends()$previous_points)
-   # plot(x = selected_trends()$previous_points, y=selected_trends()$rank_change, type = "l",
-    #     xlab = "Date", ylab = "Trend index", col = color, fg = color, col.lab = color, col.axis = color)
-    ggplot(selected_trends(),aes(x=previous_points,
-                                y=rank_change))+geom_col()+coord_flip()
+    color = "blue"
+    ggplot(selected_trends(),aes(x=rank_date,y=previous_points))+geom_col()+coord_flip()
+    #hist(selected_trends()$previous_points)
   })
   output$desc = DT::renderDataTable({
-    desc
+  datatable(agg3)
   })
   
   output$summary <- renderPrint({
