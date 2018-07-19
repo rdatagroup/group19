@@ -9,5 +9,7 @@ slect_reduce<-counrty_select[,c(1,2,3,4)]
 #change column names 
 colnames(slect_reduce)<-c("DATE","RANK","POINTS","CHANGE")
 #draw table
-widget_formattable<-formattable(slect_reduce)
+widget_formattable<-formattable(slect_reduce,list(CHANGE=formatter("span",
+                                                                   style=~style(color=ifelse(CHANGE<0,"red","green")),
+                                                                   CHANGE~icontext(ifelse(CHANGE<0,"arrow-down","arrow-up"),CHANGE))))
 widget_formattable

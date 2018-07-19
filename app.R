@@ -5,7 +5,14 @@ library(DT)
 library(png)
 library(dplyr)
 library(formattable)
+library(markdown)
+library(lubridate)
+library(plyr)
+library(tidyr)
 
+#get file
+data<-read.csv(file.choose(),header = TRUE)
+fifa<-as.data.frame(data)
 
 ui <- dashboardPage(
 
@@ -15,15 +22,22 @@ ui <- dashboardPage(
     #the logo for the site
     imageOutput("image1",height = 30),
     
-    #get file
-    data<-read.csv(file.choose(),header = TRUE),
-    fifa<-as.data.frame(data),
     
+   
     
     tags$hr(),
     
     #the sidebar menu
     sidebarMenu(
+    menuItem("Dashboard",tabName = "dashboard",icon = icon("tachometer"),
+             menuSubItem("World Table",tabName = "worldtable"),
+             menuSubItem("Europe Table",tabName = "europetable"),
+             menuSubItem("South-America Table",tabName = "southtable"),
+             menuSubItem("North-America Table",tabName = "northtable"),
+             menuSubItem("Africa Table",tabName = "africatable"),
+             menuSubItem("OceanianTable",tabName = "oceantable"),
+             menuSubItem("Asia Table",tabName = "asiatable")),
+    
     menuItem( tags$h4("Conferderation"),
     
       menuSubItem("UEFA",tabName = "UEFA"),
@@ -33,63 +47,116 @@ ui <- dashboardPage(
       menuSubItem("OFC", tabName = "OFC"),
       menuSubItem("CONCACAF",tabName = "CONCACAF")
     ),
-    menuItem( tags$h4("Best Team"),
-              
-              menuSubItem("Year",tabName = "Year"),
-              menuSubItem("Top10", tabName = "Top10"),
-              menuSubItem("Rating",tabName = "Rating")
-             
-    ),
-    menuItem( tags$h4("Prediction"),
-              
-              menuSubItem("Winning Team",tabName = "Winning Team"),
-              menuSubItem("CAF", tabName = "Slider"),
-              menuSubItem("CONMEBOL",tabName = "off")
-              
-    )
+    menuItem("Summaries",tabName = "summary"),
+    menuItem("table",tabName = "table"),
+    menuItem("Graphs",tabName = "graph"),
+  
+    menuItem("About",tabName="about_tab",icon=icon("info"))
   )
   ),
   #the skin color of the dashboard
   skin = "green",
   dashboardBody(
-    
-    fluidRow(
-      column(6,
-      box(
-        title = tags$b("controls"),width = 50, background = "blue",solidHeader = TRUE,collapsible = TRUE,status = 
-          "primary",
-        tabItems(
-          tabItem(tabName = "Slider",
-        sliderInput("slider","Observations:",
-                    min = 1,max=100, value = 50)
-        ),
-        tabItem(tabName = "off",
-                box("plot1", h2("off control h2 font"))
-                )
-      )
-      )
-    ),
-    column(6,
-         box(title = tags$b("YEAR"),width = 50,background = "blue",solidHeader = TRUE,collapsible = TRUE,status = "primary")  
-    )
-    ),
     fluidRow(
   column(12,
-         box(title =tags$b("CHART"),width = 100,collapsible = TRUE,status = "primary",solidHeader = TRUE,
+         box(title =tags$b("DATA DISPLAY AND VISUALIZATION"),width = 100,collapsible = TRUE,status = "primary",solidHeader = TRUE,
                 tabItems(
+                  
+                  tabItem(tabName="worldtable", 
+                          formattableOutput("mytable")),
+                  #tabPanel("worldtable",DT::dataTableOutput("world_ranking")),
+                  tabItem(tabName = "europetable",formattableOutput("mytable6")),
+                  tabItem(tabName = "southtable",formattableOutput("mytable1")),
+                  tabItem(tabName = "northtable",formattableOutput("mytable2")),
+                  tabItem(tabName = "africatable",formattableOutput("mytable3")),
+                  tabItem(tabName = "oceantable",formattableOutput("mytable4")),
+                  tabItem(tabName = "asiatable",formattableOutput("mytable5")),
+                  
+                  
       tabItem(tabName = "CAF",
-              plotOutput("africaBest", click = "plot ME")
+              textInput("date_year","Enter Date:","6/7/2018"),
+              actionButton("value1","PLOT"),
+              plotOutput("africaBest")
       ),
       tabItem(tabName = "UEFA",
+              textInput("date_year","Enter Date:","6/7/2018"),
+              actionButton("value","PLOT"),
               plotOutput("europebest")),
       tabItem(tabName = "CONMEBOL",
+              textInput("date_year","Enter Date:","6/7/2018"),
+              actionButton("value2","PLOT"),
               plotOutput("conmebolbest")),
       tabItem(tabName = "AFC",
+              textInput("date_year","Enter Date:","6/7/2018"),
+              actionButton("value3","PLOT"),
               plotOutput("afcbest")),
       tabItem(tabName = "OFC",
+              textInput("date_year","Enter Date:","6/7/2018"),
+              actionButton("value4","PLOT"),
               plotOutput("ofcbest")),
       tabItem(tabName = "CONCACAF",
+              textInput("date_year","Enter Date:","6/7/2018"),
+              actionButton("value5","PLOT"),
               plotOutput("concacafbest")),
+      tabItem(tabName = "table",
+              
+                  #select input to display confederation, country data 
+                  selectInput("Data","Choose Data:",
+                              choices = c("World Best","UEFA","CAF","OFC","AFC","CONMEBOL","CONCACAF","Country Data")),
+                  conditionalPanel(condition = "input.Data == 'World Best'",
+                                   column(6,textInput("date","insert date","6/7/2018")),
+                                   
+                                   column(6,textInput("range","insert range",50))),
+                  
+                  conditionalPanel(condition = "input.Data == 'UEFA'",
+                                   column(6,textInput("date","insert date","6/7/2018")),
+                                   column(6,textInput("range","insert range",10))),
+                  
+                  conditionalPanel(condition = "input.Data == 'CAF'",
+                                   column(6,textInput("date","insert date","6/7/2018")),
+                                   column(6,textInput("range","insert range",10))),
+                  
+                  conditionalPanel(condition = "input.Data == 'OFC'",
+                                   column(6,textInput("date","insert date","6/7/2018")),
+                                   column(6,textInput("range","insert range",10))),
+                  
+                  conditionalPanel(condition = "input.Data == 'CONMEBOL'",
+                                   column(6,textInput("date","insert date","6/7/2018")),
+                                   column(6,textInput("range","insert range",10))),
+                  
+                  conditionalPanel(condition = "input.Data == 'CONCACAF'",
+                                   column(6,textInput("date","insert date","6/7/2018")),
+                                   column(6,textInput("range","insert range",10))),
+                  
+                  conditionalPanel(condition = "input.Data == 'AFC'",
+                                   column(6,textInput("date","insert date","6/7/2018")),
+                                   column(6,textInput("range","insert range",10))),
+                  
+                  conditionalPanel(condition = "input.Data == 'Country Data'",
+                                   column(6,textInput("country","Choose Country","GER")),
+                                   column(6,textInput("yr","Choose Year","2018"))),
+                  
+                  
+                  tableOutput("plotTable")
+                  
+              
+              ),
+      tabItem(tabName = "about_tab",
+              uiOutput("abouts")),
+      tabItem(tabName = "summary",
+              #verbatimTextOutput("summary"),
+              plotOutput("top3"),
+              plotOutput("top32")
+              ),
+      tabItem(tabName = "search",
+              verbatimTextOutput("search")
+      ),
+      tabItem(tabName = "graph",
+              selectInput("country", label = strong("Trend index"),
+                          choices = unique(fifa$country_full),selected = "Brazil"),
+              textOutput("Department"),
+              plotOutput("country")
+      ),
       
       tabItem(tabName = "Year",
               #country_data<-fifa%>%filter(country_abrv=="GER")%>%select(rank,previous_points,rank_date),
@@ -100,64 +167,106 @@ ui <- dashboardPage(
       )
       )
     )
-  ),
-  #Row with column 12 siZe
-  fluidRow(
-    column(12,
-           box(title =tags$b("TABLE"),width = 100,collapsible = TRUE,status = "primary",solidHeader = TRUE,
-               #select input to display confederation, country data 
-               selectInput("Data","Choose Data:",
-                           choices = c("World Best","UEFA","CAF","OFC","AFC","CONMEBOL","CONCACAF","Country Data")),
-                           conditionalPanel(condition = "input.Data == 'World Best'",
-                              column(6,textInput("date","insert date","6/7/2018")),
-
-                              column(6,textInput("range","insert range",50))),
-                              
-               conditionalPanel(condition = "input.Data == 'UEFA'",
-                               column(6,textInput("date","insert date","6/7/2018")),
-                               column(6,textInput("range","insert range",10))),
-
-               conditionalPanel(condition = "input.Data == 'CAF'",
-                              column(6,textInput("date","insert date","6/7/2018")),
-                              column(6,textInput("range","insert range",10))),
-               
-               conditionalPanel(condition = "input.Data == 'OFC'",
-                              column(6,textInput("date","insert date","6/7/2018")),
-                              column(6,textInput("range","insert range",10))),
-               
-               conditionalPanel(condition = "input.Data == 'CONMEBOL'",
-                                column(6,textInput("date","insert date","6/7/2018")),
-                                column(6,textInput("range","insert range",10))),
-               
-               conditionalPanel(condition = "input.Data == 'CONCACAF'",
-                                column(6,textInput("date","insert date","6/7/2018")),
-                                column(6,textInput("range","insert range",10))),
-               
-               conditionalPanel(condition = "input.Data == 'AFC'",
-                                column(6,textInput("date","insert date","6/7/2018")),
-                                column(6,textInput("range","insert range",10))),
-               
-               conditionalPanel(condition = "input.Data == 'Country Data'",
-                                column(6,textInput("country","Choose Country","GER")),
-                                column(6,textInput("yr","Choose Year","2018"))),
-                                
-               
-               tableOutput("plotTable")
-              
-                           )
-          
-           
-           
-               
-                           )
-               )
+  )
            )
     )
+  
    
   
 
 server <- function(input,output){
-  
+  #rendering formatable tables ##############################################
+    output$mytable=renderFormattable({
+      world_data1<-fifa%>%filter(rank<=50,rank_date=="6/7/2018")%>%select(rank,country_full,confederation,previous_points,rank_change,cur_year_avg,last_year_avg,two_year_ago_avg,three_year_ago_avg,total_points)%>%arrange(desc(total_points))%>%slice(1:216)
+           formattable(world_data1,list(total_points=color_text("red","green"),
+                                        country_full=color_tile("transparent", "pink"),
+                                        rank_change=formatter("span",style=~style(color=ifelse(rank_change<0,"red","green")),
+                                                              rank_change~icontext(ifelse(rank_change<0,"arrow-down","arrow-up"),rank_change))
+                                        )) 
+       })
+    
+    output$mytable6=renderFormattable({
+    
+      tabl_select<-fifa%>%filter(confederation=="UEFA",rank_date=="6/7/2018")%>%select(rank,country_full,confederation,previous_points,rank_change,cur_year_avg,last_year_avg,two_year_ago_avg,three_year_ago_avg,total_points)%>%arrange(desc(total_points))%>%slice(1:216)
+      formattable(tabl_select,list(total_points=color_text("red","green"),
+                                   country_full=color_tile("transparent", "pink"),
+                                   rank_change=formatter("span",style=~style(color=ifelse(rank_change<0,"red","green")),
+                                                         rank_change~icontext(ifelse(rank_change<0,"arrow-down","arrow-up"),rank_change))
+      )) 
+})
+    output$mytable1=renderFormattable({
+      
+      tabl_select<-fifa%>%filter(confederation=="CONMEBOL",rank_date=="6/7/2018")%>%select(rank,country_full,confederation,previous_points,rank_change,cur_year_avg,last_year_avg,two_year_ago_avg,three_year_ago_avg,total_points)%>%arrange(desc(total_points))%>%slice(1:216)
+      formattable(tabl_select,list(total_points=color_text("red","green"),
+                                   country_full=color_tile("transparent", "pink"),
+                                   rank_change=formatter("span",style=~style(color=ifelse(rank_change<0,"red","green")),
+                                                         rank_change~icontext(ifelse(rank_change<0,"arrow-down","arrow-up"),rank_change))
+      )) 
+    })
+    output$mytable2=renderFormattable({
+      
+      tabl_select<-fifa%>%filter(confederation=="CONCACAF",rank_date=="6/7/2018")%>%select(rank,country_full,confederation,previous_points,rank_change,cur_year_avg,last_year_avg,two_year_ago_avg,three_year_ago_avg,total_points)%>%arrange(desc(total_points))%>%slice(1:216)
+      formattable(tabl_select,list(total_points=color_text("red","green"),
+                                   country_full=color_tile("transparent", "pink"),
+                                   rank_change=formatter("span",style=~style(color=ifelse(rank_change<0,"red","green")),
+                                                         rank_change~icontext(ifelse(rank_change<0,"arrow-down","arrow-up"),rank_change))
+      )) 
+    })
+    output$mytable3=renderFormattable({
+      
+      tabl_select<-fifa%>%filter(confederation=="CAF",rank_date=="6/7/2018")%>%select(rank,country_full,confederation,previous_points,rank_change,cur_year_avg,last_year_avg,two_year_ago_avg,three_year_ago_avg,total_points)%>%arrange(desc(total_points))%>%slice(1:216)
+      formattable(tabl_select,list(total_points=color_text("red","green"),
+                                   country_full=color_tile("transparent", "pink"),
+                                   rank_change=formatter("span",style=~style(color=ifelse(rank_change<0,"red","green")),
+                                                         rank_change~icontext(ifelse(rank_change<0,"arrow-down","arrow-up"),rank_change))
+      )) 
+    })
+    output$mytable4=renderFormattable({
+      
+      tabl_select<-fifa%>%filter(confederation=="OFC",rank_date=="6/7/2018")%>%select(rank,country_full,confederation,previous_points,rank_change,cur_year_avg,last_year_avg,two_year_ago_avg,three_year_ago_avg,total_points)%>%arrange(desc(total_points))%>%slice(1:216)
+      formattable(tabl_select,list(total_points=color_text("red","green"),
+                                   country_full=color_tile("transparent", "pink"),
+                                   rank_change=formatter("span",style=~style(color=ifelse(rank_change<0,"red","green")),
+                                                         rank_change~icontext(ifelse(rank_change<0,"arrow-down","arrow-up"),rank_change))
+      )) 
+    })
+    output$mytable5=renderFormattable({
+      
+      tabl_select<-fifa%>%filter(confederation=="AFC",rank_date=="6/7/2018")%>%select(rank,country_full,confederation,previous_points,rank_change,cur_year_avg,last_year_avg,two_year_ago_avg,three_year_ago_avg,total_points)%>%arrange(desc(total_points))%>%slice(1:216)
+      formattable(tabl_select,list(total_points=color_text("red","green"),
+                                   country_full=color_tile("transparent", "pink"),
+                                   rank_change=formatter("span",style=~style(color=ifelse(rank_change<0,"red","green")),
+                                                         rank_change~icontext(ifelse(rank_change<0,"arrow-down","arrow-up"),rank_change))
+      )) 
+    })
+  ####################################################
+  output$Department <-{(
+    renderText(input$country)
+  )
+  }
+  output$country<-renderPlot({
+    text_data<-input$country
+    dta<-data%>%filter(country_full==text_data)%>%
+      select(rank,country_full,rank_change,previous_points)%>%
+      arrange(desc(previous_points))
+    
+    ggplot(data=dta, aes_string(x=dta$previous_points,y=dta$rank_change))  +
+      stat_summary( geom = "bar",colour="#56B4E9",fill="#56B4E9") +
+      geom_bar(stat="identity") +
+      labs(title=input$country, y ="Rank_change",x="Total Points Earned") +
+      theme_classic() +
+      theme(plot.title = element_text(hjust = 0.5))
+  })
+ 
+ 
+ output$desc = DT::renderDataTable({
+   datatable(agg3)
+ })
+ 
+ output$summary <- renderPrint({
+   summary(fifa)
+ })
+ 
  
   #plot_bar country data
  # output$worldbest <- renderPlot(ggplot(world_best,aes(x=country_full,y=total_points))+geom_col()+coord_flip())
@@ -166,12 +275,7 @@ server <- function(input,output){
     country_data<-fifa%>%filter(country_abrv=="GER")%>%select(rank,previous_points,rank_date)
     ggplot(country_data,aes(x=rank_date,y=previous_points))+geom_col()+coord_flip()})
   
-  #output africa best
   
-  output$africaBest <- renderPlot({
-    africa_best<-fifa%>%filter(confederation=="CAF",rank_date=="6/7/2018")%>%select(rank,country_full,total_points)%>%slice(1:10)
-    ggplot(africa_best,aes(x=country_full,y=total_points))+geom_col()+coord_flip()
-  })
   #display table of world best
   output$plotTable <- renderTable({
     choosen_data <- input$Data
@@ -196,51 +300,91 @@ server <- function(input,output){
       colnames(cho_data)<-c("WORLD-RANK","COUNTRY","POINTS")
       widget_formattable<-formattable(cho_data)
     }else if(choosen_data=="Country Data"){
-      country_data<-fifa%>%filter(filtered_date<-substring(rank_date,6)==yearly_data,country_abrv==country_spec)%>%select(rank,total_points,rank_change,last_year_avg,last_year_avg_weighted,cur_year_avg,cur_year_avg_weighted)
-      cont_data<-country_data[,c(1,3,4,5,6,7,2)]
+      country_data<-fifa%>%filter(filtered_date<-substring(rank_date,6)==yearly_data,country_abrv==country_spec)%>%select(rank,total_points,rank_change)
+      cont_data<-country_data[,c(1,2,3)]
       #The display the table
       
       #change column names 
-      #colnames(cont_data)<-c("WORLD-RANK","COUNTRY","POINTS")
+      colnames(cont_data)<-c("RANK","POINTS","CHANGE")
       widget_formattable<-formattable(cont_data)
     }
 
   },striped = T,width = "600",align ="c")
-  
+#interactive plots of the bar graphs################################################################################
   #output europe's best
-  output$europebest <- renderPlot({
-    europe_best<-fifa%>%filter(confederation=="UEFA",rank_date=="6/7/2018")%>%select(rank,country_full,total_points)%>%slice(1:10)
-    ggplot(europe_best,aes(x=country_full,y=total_points))+geom_col()+coord_flip()
+  bar_plot<-eventReactive(
+    input$value,{
+      date_of_ranking=input$date_year
+      europe_best<-fifa%>%filter(confederation=="UEFA",rank_date==date_of_ranking)%>%select(country_full,total_points)%>%slice(1:10)
+      #ggplot(europe_best,aes(x=country_full,y=total_points))+geom_col()+coord_flip()
+      ggplot(europe_best,aes(x=country_full,y=total_points,fill=country_full))+geom_col()+coord_flip()+geom_bar(stat = "identity",alpha=.4)+geom_text(aes(label=total_points),nudge_y = 4)+scale_fill_brewer()+ggtitle("EUROPE'S BEST COUNTRIES")#barplot(europe_best,x=country_full,y=total_points)
+    }
+  )
+  output$europebest <- renderPlot({bar_plot()})
+  #output africa best
+  caf_plot<-eventReactive(
+    input$value1,{date_of_ranking=input$date_year
+      africa_best<-fifa%>%filter(confederation=="CAF",rank_date==date_of_ranking)%>%select(rank,country_full,total_points)%>%slice(1:10)
+      ggplot(africa_best,aes(x=country_full,y=total_points))+geom_col()+coord_flip()+geom_bar(stat = "identity",fill="steelblue")+theme_minimal()+geom_text(aes(label=total_points),nudge_y = 4)+ggtitle("AFRICA'S BEST COUNTRIES")
+    })
     
-  })
+  output$africaBest <- renderPlot({caf_plot()})
   #output asia's best
-  output$afcbest <- renderPlot({
-    asian_best<-fifa%>%filter(confederation=="AFC",rank_date=="6/7/2018")%>%select(rank,country_full,total_points)%>%slice(1:10)
-    ggplot(asian_best,aes(x=country_full,y=total_points))+geom_col()+coord_flip()
-  })
+  Asia_plot<-eventReactive(
+    input$value3,{
+      date_of_ranking=input$date_year
+      asian_best<-fifa%>%filter(confederation=="AFC",rank_date==date_of_ranking)%>%select(rank,country_full,total_points)%>%slice(1:10)
+      ggplot(asian_best,aes(x=country_full,y=total_points))+geom_col()+coord_flip()+theme_minimal()+ggtitle("ASIAN'S BEST COUNTRIES")+theme_minimal()+geom_bar(stat = "identity",fill="steelblue")+geom_text(aes(label=total_points),nudge_y = 4)+scale_fill_brewer()
+    }
+  )
+  output$afcbest <- renderPlot({Asia_plot()})
   #output oceanian best
-  output$ofcbest <- renderPlot({
-    oceanian_best<-fifa%>%filter(confederation=="OFC",rank_date=="6/7/2018")%>%select(rank,country_full,total_points)%>%slice(1:10)
-    ggplot(oceanian_best,aes(x=country_full,y=total_points))+geom_col()+coord_flip()
-  })
+  Ocean_plot<-eventReactive(
+    input$value4,{date_of_ranking=input$date_year
+      oceanian_best<-fifa%>%filter(confederation=="OFC",rank_date==date_of_ranking)%>%select(rank,country_full,total_points)%>%slice(1:10)
+      ggplot(oceanian_best,aes(x=country_full,y=total_points))+geom_col()+coord_flip()+theme_minimal()+geom_bar(stat = "identity",fill="steelblue")+geom_text(aes(label=total_points),nudge_y = 4)+scale_fill_brewer()+ggtitle("OCEANIAN'S BEST COUNTRIES")
+    }
+  )
+  output$ofcbest <- renderPlot({Ocean_plot()})
   #output southamerica's best
-  output$conmebolbest <- renderPlot({
+  conmebol_plot<-eventReactive(
+    input$value2,{date_of_ranking=input$date_year
     southamerica_best<-fifa%>%filter(confederation=="CONMEBOL",rank_date=="6/7/2018")%>%select(rank,country_full,total_points)%>%slice(1:10)
-    ggplot(southamerica_best,aes(x=country_full,y=total_points))+geom_col()+coord_flip()
-  })
+    ggplot(southamerica_best,aes(x=country_full,y=total_points))+geom_col()+coord_flip()+theme_minimal()+geom_bar(stat = "identity",fill="steelblue")+geom_text(aes(label=total_points),nudge_y = 4)+scale_fill_brewer()+ggtitle("SOUTH AMERICAN'S BEST COUNTRIES")
+    }
+  )
+  output$conmebolbest <- renderPlot({conmebol_plot()})
   #output for concaf
-  output$concacafbest <- renderPlot({
-    Northamerica_best<-fifa%>%filter(confederation=="CONCACAF",rank_date=="6/7/2018")%>%select(rank,country_full,total_points)%>%slice(1:10)
-    ggplot( Northamerica_best,aes(x=country_full,y=total_points))+geom_col()+coord_flip()
-  })
+  concacaf_plot<-eventReactive(
+    input$value5,{date_of_ranking=input$date_year
+    Northamerica_best<-fifa%>%filter(confederation=="CONCACAF",rank_date==date_of_ranking)%>%select(rank,country_full,total_points)%>%slice(1:10)
+    ggplot( Northamerica_best,aes(x=country_full,y=total_points))+geom_col()+coord_flip()+theme_minimal()+geom_bar(stat = "identity",fill="steelblue")+geom_text(aes(label=total_points),nudge_y = 4)+scale_fill_brewer()+ggtitle("NORTH AMERICAN'S BEST COUNTRIES")
+    }
+  )
+  output$concacafbest <- renderPlot({concacaf_plot()})
   #output worldbest
-  
   output$worldbest <- renderPlot({
     world_best_data<-fifa%>%filter(rank<=10,rank_date=="6/7/2018")%>%select(rank,country_full,total_points)
-    ggplot( world_best_data,aes(x=country_full,y=total_points))+geom_col()+coord_flip()
+    ggplot( world_best_data,aes(x=country_full,y=total_points))+geom_col()+coord_flip()+theme_minimal()+geom_bar(stat = "identity",fill="steelblue")+geom_text(aes(label=total_points),nudge_y = 4)+scale_fill_brewer()
+  })
+  ######################################################
+  output$top3<-renderPlot({
+    firt_position <- fifa%>%filter(rank<=3)%>%select(country_abrv)
+    table_count<-count(firt_position)
+    ggplot(table_count,aes(table_count$country_abrv,table_count$freq))+geom_bar(stat="identity", width = 0.5, fill="tomato2")+labs(title="BAR CHART",subtitle="COUNTRIES THAT OCCUPPIED THE TOP 3",y="APPEARENCES", x="COUNTRY")+theme(axis.text.x = element_text(angle=65, vjust=0.6))
+  })
+  output$top32<-renderPlot({
+    firt_position <- fifa%>%filter(rank<=3)%>%select(country_abrv)
+    table_count<-count(firt_position)
+    ggplot(table_count,aes(table_count$country_abrv,table_count$freq))+geom_count(col="tomato3", show.legend=F)+labs(subtitle="Appearence Vs Country (TOP 3 COUNT)",y="APPEARENCES", x="COUNTRY",title="Counts Plot")
+  })
+  #displaying html data
+  output$abouts<-reactiveUI(function(){
+    file_to_show='aboutus.Rhtml'
+    HTML(readLines(file_to_show))
   })
   #choice made of the select option
-  output$result <- renderText(paste(input$conferderation))
+ # output$result <- renderText(paste(input$conferderation))
   
   #render image
   output$image1 <- renderImage({
