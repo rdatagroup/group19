@@ -24,6 +24,10 @@ subset <- data4%>%select(rank_date)
 subset_date <- format(as.Date(subset$rank_date, format="%m/%d/%Y"),"%Y")
 subset_data <-cbind(data4,subset_date)
 
+#get file
+data<-read.csv(file.choose(),header = TRUE)
+fifa<-as.data.frame(data)
+
 ui <- dashboardPage(
   ###applying the styles to shiny
   
@@ -34,6 +38,13 @@ ui <- dashboardPage(
     
     #the logo for the site
     imageOutput("image1",height = 30),
+<<<<<<< HEAD
+=======
+    
+   
+    
+    
+>>>>>>> 88ef5ade10efe8937109adbbdd3423a66c87a9f4
     tags$hr(),
     
     #the sidebar menu
