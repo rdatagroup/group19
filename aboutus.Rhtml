@@ -2,19 +2,22 @@
 
 <head>
 <title>Title</title>
+    <link rel="stylesheet" type="text/css" href="www/style.css">
+    <link rel="stylesheet" type="text/css" href="www/bootstrap.css">
+
 </head>
 
-<body>
+<body class="container text-center">
 <h1>FIFA WORLD RANKING SYSTEM DOCUMENTARY</h1>
-<div>
-<h2>INTRODUCTION</h2>
+<div class="col-lg-6">
+<h2 class="h1 text-success">INTRODUCTION</h2>
 <p>The FIFA world Ranking system an R developed system,mainly used to visualize the worlds best performing countries.<br>
 This system can also be used to predict the country's rank according the matches played and their weights as will be explained 
 </p>
 </div>
-<div><h2>MATCH STATUS</h2>
-<table>
-<tr>
+<div class="col-lg-12"><h2 class="text-success">MATCH STATUS</h2>
+<table class=" table  table-striped">
+<tr style="background-color:green; color:white;">
 <th>Match Status</th>
 <th>Multiplier</th>
 </tr>
@@ -35,9 +38,9 @@ This system can also be used to predict the country's rank according the matches
 <td>x4.0</td>
 </tr>
 </table></div>
-<div><h2>WIN/DRAW/LOSS</h2>
-<table>
-<tr>
+<div class="col-lg-12"><h2 class="h2 text-success">WIN/DRAW/LOSS</h2>
+<table class="table table-dark table-striped">
+<tr style="background-color:green; color:white;">
 <th>Result</th>
 <th>Points</th>
 </tr>
@@ -63,11 +66,85 @@ This system can also be used to predict the country's rank according the matches
 </tr>
 </table>
 </div>
-<div>OPPONENT STREGTH</div>
-<div>REGIONAL STRENGTH</div>
-<div>ASSESEMENT PERIOD</div>
-<div>RANKING FORMULA</div>
-<div>REFERRENCES</div>
+<div class="col-lg-12"><div class="row"><h4 class="text-success">OPPONENT STRENGTH</h4></div>
+<div class="row ">
+<p class=" p text-left">A win against a very highly ranked opponent is a considerably greater achievement than a win against a low rated opponent ,thus the strength of<br>the oppossing team is an important factor<br />
+The formula used is:<br />
+Opposition strength multiplier=(200-ranking position)/100</p>
+</div>
+</div>
+<div class="col-lg-12"><div class="row"><h4 class="text-success">REGIONAL STRENGTH</h4></div>
+<div class="row">
+<table class="table table-dark table-striped">
+<tr style="background-color:green; color:white;"><th>Confederation</th><th>After 2014 world cup</th><th>After 2010 world cup</th><th>After 2006 world cup</th><th>Up to and including  2006 world cup</th></tr>
+<tr>
+<td>UEFA(Europe)</td><td>0.99</td><td>1.00</td><td>1.00</td><td>1.00</td>
+</tr>
+<tr>
+<td>CONMENBOL(South America)</td><td>1.00</td><td>1.00</td><td>0.98</td><td>1.00</td>
+</tr>
+<tr>
+<td>CONCACAF(North and Central American and Caribbean)</td><td>0.85</td><td>0.88</td><td>0.85</td><td>0.88</td>
+</tr>
+<tr>
+<td>AFC(Asia)</td><td>0.85</td><td>0.86</td><td>0.85</td><td>0.85</td>
+</tr>
+<tr>
+<td>CAF(Africa)</td><td>0.85</td><td>0.86</td><td>0.85</td><td>0.85</td>
+</tr>
+<tr>
+<td>OFC(Oceania)</td><td>0.85</td><td>0.85</td><td>0.85</td><td>0.85</td>
+</tr>
+</table>
+
+</div>
+<div class="row ">
+<p class="text-left p">The multiplier used in the calculation it the average of the regional strength weighting of the two teams:<br />
+Regional strength  multiplier=Team 1 regional weighting + Team2 regional weighting/2</p>
+</div>
+</div>
+<div class="col-lg-12"><div class="row "><h4 class="text-success">ASSESEMENT PERIOD</h4>
+<p class="p text-left">Matches played over the last four years (48 months) are included in the calculation, but there is a weighting to put more emphasis on recent<br> results. Previously an eight-year period was used. The date weighting is as follows: </p>
+</div>
+<div class="row ">
+<table class="table table-light table-striped">
+<tr style="background-color:green; color:white;"><th>Date of Match</th><th>Multiplier</th></tr>
+<tr>
+<td>Within the last 12months</td><td>X1.0</td>
+</tr>
+<tr>
+<td>12-24 months ago </td><td>X0.5</td>
+</tr>
+<tr>
+<td>24-36 months ago </td><td>X 0.3</td>
+</tr>
+<tr>
+<td>36-48 months ago</td><td>X0.2</td>
+</tr>
+</table>
+</div>
+<div class="row">
+<p class="p text-left ">
+If a team exceeds the assessment period without playing a match, it is temporarily removed from the rankings, and is reinstated as soon as it plays a<br> match again. The most recent team to be temporarily absent from the rankings is São Tomé and Príncipe (reinstated in November 2011, after having<br> been removed in December 2007). 
+</p>
+</div>
+
+</div>
+<div class="col-lg-12"><div class="row"><h4 class="text-success">RANKING FORMULA</h4>
+<p class="p text-left">
+The final ranking points figure for a single match is multiplied by 100 and rounded to the nearest whole number.<br>
+
+   <b> Ranking points = Result points × Match status × Opposition strength × Regional strength</b> <br>
+
+Results for all matches played in the year are averaged together (assuming at least five matches have been played). The average ranking points for the<br> four previous years, weighted by their multiplier mentioned above, are added together to arrive at the final ranking points
+</p>
+</div></div>
+<div class="col-lg-12"><div class="row"><h4 class="text-success">REFERRENCES</h4></div>
+<div class="row">
+<p>[1]FIFA World Rankings - Wikipedia.html</p>
+<p>[2]FIFA World Rankings System</p>
+</div>
+</div>
 
 </body>
 </html>
