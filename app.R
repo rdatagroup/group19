@@ -212,7 +212,8 @@ server <- function(input,output){
   })
   #output southamerica's best
   output$conmebolbest <- renderPlot({
-    southamerica_best<-fifa%>%filter(confederation=="CONMEBOL",rank_date=="6/7/2018")%>%select(rank,country_full,total_points)%>%slice(1:10)
+      
+        southamerica_best<-fifa%>%filter(confederation=="CONMEBOL",rank_date=="6/7/2018")%>%select(rank,country_full,total_points)%>%slice(1:10)
     ggplot(southamerica_best,aes(x=country_full,y=total_points))+geom_col()+coord_flip()
   })
   #output for concaf
@@ -221,7 +222,7 @@ server <- function(input,output){
     ggplot( Northamerica_best,aes(x=country_full,y=total_points))+geom_col()+coord_flip()
   })
   #output worldbest
-  
+   
   output$worldbest <- renderPlot({
     world_best_data<-fifa%>%filter(rank<=10,rank_date=="6/7/2018")%>%select(rank,country_full,total_points)
     ggplot( world_best_data,aes(x=country_full,y=total_points))+geom_col()+coord_flip()
