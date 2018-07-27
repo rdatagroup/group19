@@ -5,8 +5,9 @@ account: fifarankingsystem
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 386163
-bundleId: 1494926
+bundleId: 1498840
 url: https://fifarankingsystem.shinyapps.io/group19/
-when: 1532343417.19117
+when: 1532514269.37511
 asMultiple: FALSE
 asStatic: FALSE
+ignoredFiles: .RData|app_ericpeter.R|time.R|try.R
