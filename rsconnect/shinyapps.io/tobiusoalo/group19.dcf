@@ -1,0 +1,13 @@
+name: group19
+title: group19
+username:
+account: tobiusoalo
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 387739
+bundleId: 1499109
+url: https://tobiusoalo.shinyapps.io/group19/
+when: 1532522203.82639
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: .RData|app_ericpeter.R|data.html|time.R|try.R
