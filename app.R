@@ -25,8 +25,8 @@ subset_date <- format(as.Date(subset$rank_date, format="%m/%d/%Y"),"%Y")
 subset_data <-cbind(data4,subset_date)
 
 #get file
-data<-read.csv(file.choose(),header = TRUE)
-fifa<-as.data.frame(data)
+#data<-read.csv(file.choose(),header = TRUE)
+#fifa<-as.data.frame(data)
 
 ui <- dashboardPage(
   ###applying the styles to shiny
@@ -369,7 +369,7 @@ server <- function(input,output){
       date_of_ranking=input$date_year1
       europe_best<-fifa%>%filter(confederation=="UEFA",rank_date==date_of_ranking)%>%select(country_full,total_points)%>%slice(1:10)
       #ggplot(europe_best,aes(x=country_full,y=total_points))+geom_col()+coord_flip()
-      ggplot(europe_best,aes(x=country_full,y=total_points,fill=country_full))+geom_col()+coord_flip()+geom_bar(stat = "identity",alpha=.4)+geom_text(aes(label=total_points),nudge_y = 4)+scale_fill_brewer()+ggtitle("EUROPE'S BEST COUNTRIES")#barplot(europe_best,x=country_full,y=total_points)
+      ggplot(europe_best,aes(x=country_full,y=total_points,fill=country_full))+geom_col()+coord_flip()+geom_bar(stat = "identity",alpha=.4)+geom_text(aes(label=total_points),nudge_y = 4)+scale_fill_brewer(palette="Spectral")+ggtitle("EUROPE'S BEST COUNTRIES")#barplot(europe_best,x=country_full,y=total_points)
     }
   )
   output$europebest <- renderPlot({bar_plot()})
@@ -377,7 +377,7 @@ server <- function(input,output){
   caf_plot<-eventReactive(
     input$value1,{date_of_ranking=input$date_year
       africa_best<-fifa%>%filter(confederation=="CAF",rank_date==date_of_ranking)%>%select(rank,country_full,total_points)%>%slice(1:10)
-      ggplot(africa_best,aes(x=country_full,y=total_points))+geom_col()+coord_flip()+geom_bar(stat = "identity",fill="steelblue")+theme_minimal()+geom_text(aes(label=total_points),nudge_y = 4)+ggtitle("AFRICA'S BEST COUNTRIES")
+      ggplot(africa_best,aes(x=country_full,y=total_points,fill=country_full))+geom_col()+coord_flip()+geom_bar(stat = "identity",alpha=.4)+geom_text(aes(label=total_points),nudge_y = 4)+ggtitle("AFRICA'S BEST COUNTRIES")+scale_fill_brewer(palette="Spectral")
     })
     
   output$africaBest <- renderPlot({caf_plot()})
@@ -386,7 +386,7 @@ server <- function(input,output){
     input$value3,{
       date_of_ranking=input$date_year3
       asian_best<-fifa%>%filter(confederation=="AFC",rank_date==date_of_ranking)%>%select(rank,country_full,total_points)%>%slice(1:10)
-      ggplot(asian_best,aes(x=country_full,y=total_points))+geom_col()+coord_flip()+theme_minimal()+ggtitle("ASIAN'S BEST COUNTRIES")+theme_minimal()+geom_bar(stat = "identity",fill="steelblue")+geom_text(aes(label=total_points),nudge_y = 4)+scale_fill_brewer()
+      ggplot(asian_best,aes(x=country_full,y=total_points,fill=country_full))+geom_col()+coord_flip()+ggtitle("ASIAN'S BEST COUNTRIES")+geom_bar(stat = "identity",alpha=.4)+geom_text(aes(label=total_points),nudge_y = 4)+scale_fill_brewer(palette="Spectral")
     }
   )
   output$afcbest <- renderPlot({Asia_plot()})
@@ -394,15 +394,20 @@ server <- function(input,output){
   Ocean_plot<-eventReactive(
     input$value4,{date_of_ranking=input$date_year4
       oceanian_best<-fifa%>%filter(confederation=="OFC",rank_date==date_of_ranking)%>%select(rank,country_full,total_points)%>%slice(1:10)
-      ggplot(oceanian_best,aes(x=country_full,y=total_points))+geom_col()+coord_flip()+theme_minimal()+geom_bar(stat = "identity",fill="steelblue")+geom_text(aes(label=total_points),nudge_y = 4)+scale_fill_brewer()+ggtitle("OCEANIAN'S BEST COUNTRIES")
+      ggplot(oceanian_best,aes(x=country_full,y=total_points,fill=country_full))+geom_col()+coord_flip()+geom_bar(stat = "identity",alpha=.4)+geom_text(aes(label=total_points),nudge_y = 4)+scale_fill_brewer(palette="Spectral")+ggtitle("OCEANIAN'S BEST COUNTRIES")
     }
   )
   output$ofcbest <- renderPlot({Ocean_plot()})
   #output southamerica's best
   conmebol_plot<-eventReactive(
     input$value2,{date_of_ranking=input$date_year2
+<<<<<<< HEAD
     southamerica_best<-fifa%>%filter(confederation=="CONMEBOL",rank_date=="6/7/2018")%>%select(rank,country_full,total_points)%>%slice(1:10)
     ggplot(southamerica_best,aes(x=country_full,y=total_points))+geom_col()+coord_flip()+theme_minimal()+geom_bar(stat = "identity",fill="steelblue")+geom_text(aes(label=total_points),nudge_y = 4)+scale_fill_brewer()+ggtitle("SOUTH AMERICAN'S BEST COUNTRIES")
+=======
+    southamerica_best<-fifa%>%filter(confederation=="CONMEBOL",rank_date==date_of_ranking)%>%select(rank,country_full,total_points)%>%slice(1:10)
+    ggplot(southamerica_best,aes(x=country_full,y=total_points,fill=country_full))+geom_col()+coord_flip()+geom_bar(stat = "identity",alpha=.4)+geom_text(aes(label=total_points),nudge_y = 4)+scale_fill_brewer(palette="Spectral")+ggtitle("SOUTH AMERICAN'S BEST COUNTRIES")
+>>>>>>> dbdb3889f5ff01dc56ccbe32f02602b9ca34bd01
     }
   )
   output$conmebolbest <- renderPlot({conmebol_plot()})
@@ -410,15 +415,11 @@ server <- function(input,output){
   concacaf_plot<-eventReactive(
     input$value5,{date_of_ranking=input$date_year5
     Northamerica_best<-fifa%>%filter(confederation=="CONCACAF",rank_date==date_of_ranking)%>%select(rank,country_full,total_points)%>%slice(1:10)
-    ggplot( Northamerica_best,aes(x=country_full,y=total_points))+geom_col()+coord_flip()+theme_minimal()+geom_bar(stat = "identity",fill="steelblue")+geom_text(aes(label=total_points),nudge_y = 4)+scale_fill_brewer()+ggtitle("NORTH AMERICAN'S BEST COUNTRIES")
+    ggplot( Northamerica_best,aes(x=country_full,y=total_points,fill=country_full))+geom_col()+coord_flip()+geom_bar(stat = "identity",alpha=.4)+geom_text(aes(label=total_points),nudge_y = 4)+scale_fill_brewer(palette="Spectral")+ggtitle("NORTH AMERICAN'S BEST COUNTRIES")
     }
   )
   output$concacafbest <- renderPlot({concacaf_plot()})
-  #output worldbest
-  output$worldbest <- renderPlot({
-    world_best_data<-fifa%>%filter(rank<=10,rank_date=="6/7/2018")%>%select(rank,country_full,total_points)
-    ggplot( world_best_data,aes(x=country_full,y=total_points))+geom_col()+coord_flip()+theme_minimal()+geom_bar(stat = "identity",fill="steelblue")+geom_text(aes(label=total_points),nudge_y = 4)+scale_fill_brewer()
-  })
+  
   ######################################################
   output$top3<-renderPlot({
     firt_position <- fifa%>%filter(rank<=3)%>%select(country_abrv)

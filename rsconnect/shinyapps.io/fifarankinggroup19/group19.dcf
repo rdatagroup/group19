@@ -1,13 +1,23 @@
 name: group19
+<<<<<<< HEAD
 title: group19
+=======
+title:
+>>>>>>> dbdb3889f5ff01dc56ccbe32f02602b9ca34bd01
 username:
 account: fifarankinggroup19
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 387712
+<<<<<<< HEAD
 bundleId: 1499070
 url: https://fifarankinggroup19.shinyapps.io/group19/
 when: 1532521538.75727
 asMultiple: FALSE
 asStatic: FALSE
 ignoredFiles: .RData|app_ericpeter.R|data.html|time.R|try.R
+=======
+bundleId: 1498957
+url: https://fifarankinggroup19.shinyapps.io/group19/
+when: 1532518886.64452
+>>>>>>> dbdb3889f5ff01dc56ccbe32f02602b9ca34bd01
