@@ -11,11 +11,8 @@ library(stringr)
 library(lubridate)
 library(rsconnect)
 library(tidyr)
-
-
 #get file
 #data<-read.csv(file.choose(),header = TRUE)
-
 #data<-read.csv(file="data/fifa_ranking.csv")
 fifa<-as.data.frame(data)
 data4<-data%>%
@@ -401,13 +398,11 @@ server <- function(input,output){
   #output southamerica's best
   conmebol_plot<-eventReactive(
     input$value2,{date_of_ranking=input$date_year2
-<<<<<<< HEAD
     southamerica_best<-fifa%>%filter(confederation=="CONMEBOL",rank_date=="6/7/2018")%>%select(rank,country_full,total_points)%>%slice(1:10)
     ggplot(southamerica_best,aes(x=country_full,y=total_points))+geom_col()+coord_flip()+theme_minimal()+geom_bar(stat = "identity",fill="steelblue")+geom_text(aes(label=total_points),nudge_y = 4)+scale_fill_brewer()+ggtitle("SOUTH AMERICAN'S BEST COUNTRIES")
-=======
     southamerica_best<-fifa%>%filter(confederation=="CONMEBOL",rank_date==date_of_ranking)%>%select(rank,country_full,total_points)%>%slice(1:10)
     ggplot(southamerica_best,aes(x=country_full,y=total_points,fill=country_full))+geom_col()+coord_flip()+geom_bar(stat = "identity",alpha=.4)+geom_text(aes(label=total_points),nudge_y = 4)+scale_fill_brewer(palette="Spectral")+ggtitle("SOUTH AMERICAN'S BEST COUNTRIES")
->>>>>>> dbdb3889f5ff01dc56ccbe32f02602b9ca34bd01
+
     }
   )
   output$conmebolbest <- renderPlot({conmebol_plot()})
